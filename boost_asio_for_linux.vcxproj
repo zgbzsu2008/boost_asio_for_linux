@@ -75,19 +75,48 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
+    <ClInclude Include="associated_allocator.hpp" />
+    <ClInclude Include="associated_executor.hpp" />
+    <ClInclude Include="async_result.hpp" />
+    <ClInclude Include="call_stack.hpp" />
     <ClInclude Include="conditionally_enabled_event.hpp" />
     <ClInclude Include="conditionally_enabled_mutex.hpp" />
+    <ClInclude Include="epoll_reactor.hpp" />
+    <ClInclude Include="error_code.hpp" />
     <ClInclude Include="event.hpp" />
+    <ClInclude Include="execution_context.hpp" />
+    <ClInclude Include="executor_op.hpp" />
+    <ClInclude Include="fenced_block.hpp" />
+    <ClInclude Include="global.hpp" />
+    <ClInclude Include="handler_alloc_helpers.hpp" />
+    <ClInclude Include="io_context.hpp" />
     <ClInclude Include="mutex.hpp" />
     <ClInclude Include="noncopyable.hpp" />
     <ClInclude Include="object_pool.hpp" />
     <ClInclude Include="op_queue.hpp" />
+    <ClInclude Include="reactor_op.hpp" />
+    <ClInclude Include="recycling_allocator.hpp" />
+    <ClInclude Include="scheduler.hpp" />
+    <ClInclude Include="scheduler_operation.hpp" />
+    <ClInclude Include="scheduler_thread_info.hpp" />
     <ClInclude Include="scoped_lock.hpp" />
+    <ClInclude Include="select_interrupter.hpp" />
+    <ClInclude Include="service_registry.hpp" />
+    <ClInclude Include="system_context.hpp" />
+    <ClInclude Include="system_executor.hpp" />
     <ClInclude Include="thread.hpp" />
+    <ClInclude Include="thread_context.hpp" />
     <ClInclude Include="thread_group.hpp" />
+    <ClInclude Include="thread_info_base.hpp" />
+    <ClInclude Include="throw_exception.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="epoll_reactor.cpp" />
+    <ClCompile Include="execution_context.cpp" />
+    <ClCompile Include="io_context.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="scheduler.cpp" />
+    <ClCompile Include="system_context.cpp" />
     <ClCompile Include="test_event.hpp" />
   </ItemGroup>
   <ItemGroup>

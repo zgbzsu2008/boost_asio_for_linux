@@ -9,6 +9,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="conditionally_enabled_event.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="conditionally_enabled_mutex.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_group.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="object_pool.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="op_queue.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
     <ClInclude Include="event.hpp">
       <Filter>detail</Filter>
     </ClInclude>
@@ -21,30 +36,78 @@
     <ClInclude Include="scoped_lock.hpp">
       <Filter>detail</Filter>
     </ClInclude>
-    <ClInclude Include="conditionally_enabled_event.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="conditionally_enabled_mutex.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
     <ClInclude Include="thread.hpp">
       <Filter>detail</Filter>
     </ClInclude>
-    <ClInclude Include="thread_group.hpp">
+    <ClInclude Include="fenced_block.hpp">
       <Filter>detail</Filter>
     </ClInclude>
-    <ClInclude Include="object_pool.hpp">
+    <ClInclude Include="global.hpp">
       <Filter>detail</Filter>
     </ClInclude>
-    <ClInclude Include="op_queue.hpp">
+    <ClInclude Include="error_code.hpp">
       <Filter>detail</Filter>
     </ClInclude>
+    <ClInclude Include="throw_exception.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="select_interrupter.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_info_base.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="scheduler_operation.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="scheduler_thread_info.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="reactor_op.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="execution_context.hpp" />
+    <ClInclude Include="service_registry.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="system_executor.hpp" />
+    <ClInclude Include="system_context.hpp" />
+    <ClInclude Include="scheduler.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_context.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="call_stack.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="executor_op.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="associated_allocator.hpp" />
+    <ClInclude Include="associated_executor.hpp" />
+    <ClInclude Include="async_result.hpp" />
+    <ClInclude Include="epoll_reactor.hpp" />
+    <ClInclude Include="handler_alloc_helpers.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="recycling_allocator.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="io_context.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="test_event.hpp">
       <Filter>tests</Filter>
     </ClCompile>
+    <ClCompile Include="execution_context.cpp" />
+    <ClCompile Include="system_context.cpp" />
+    <ClCompile Include="scheduler.cpp">
+      <Filter>detail</Filter>
+    </ClCompile>
+    <ClCompile Include="epoll_reactor.cpp" />
+    <ClCompile Include="io_context.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />
