@@ -33,6 +33,12 @@
     <ClInclude Include="thread_group.hpp">
       <Filter>detail</Filter>
     </ClInclude>
+    <ClInclude Include="object_pool.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="op_queue.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

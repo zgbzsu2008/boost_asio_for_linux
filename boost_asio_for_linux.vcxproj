@@ -80,6 +80,8 @@
     <ClInclude Include="event.hpp" />
     <ClInclude Include="mutex.hpp" />
     <ClInclude Include="noncopyable.hpp" />
+    <ClInclude Include="object_pool.hpp" />
+    <ClInclude Include="op_queue.hpp" />
     <ClInclude Include="scoped_lock.hpp" />
     <ClInclude Include="thread.hpp" />
     <ClInclude Include="thread_group.hpp" />
