@@ -48,7 +48,7 @@ class io_context : public execution_context
 
   ~io_context();
 
-  executor_type get_executor();
+  executor_type get_executor() const;
 
   std::size_t run();
 

@@ -9,6 +9,7 @@ namespace boost::asio
 class system_executor
 {
  public:
+
   system_context& context() const { return detail::global<system_context>(); }
 
   void on_work_started() const {}

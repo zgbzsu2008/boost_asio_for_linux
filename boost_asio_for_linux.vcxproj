@@ -78,6 +78,7 @@
     <ClInclude Include="associated_allocator.hpp" />
     <ClInclude Include="associated_allocator2.hpp" />
     <ClInclude Include="associated_executor.hpp" />
+    <ClInclude Include="associated_executor2.hpp" />
     <ClInclude Include="async_result.hpp" />
     <ClInclude Include="call_stack.hpp" />
     <ClInclude Include="conditionally_enabled_event.hpp" />
@@ -93,6 +94,7 @@
     <ClInclude Include="handler_alloc_helpers.hpp" />
     <ClInclude Include="has_type_member.hpp" />
     <ClInclude Include="io_context.hpp" />
+    <ClInclude Include="is_executor.hpp" />
     <ClInclude Include="mutex.hpp" />
     <ClInclude Include="noncopyable.hpp" />
     <ClInclude Include="object_pool.hpp" />
@@ -122,6 +124,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="system_context.cpp" />
+    <ClCompile Include="test_associated_allocator.cpp" />
     <ClCompile Include="test_event.hpp" />
   </ItemGroup>
   <ItemGroup>

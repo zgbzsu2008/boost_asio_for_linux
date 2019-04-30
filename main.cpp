@@ -1,35 +1,39 @@
 #include <iostream>
 #include <string>
-#include <type_traits>
-#include "associated_allocator2.hpp"
+#include "associated_executor.hpp"
+#include "io_context.hpp"
+#include "service_registry_helpers.hpp"
 
-struct B {
-};
+namespace associated_executor {
+using namespace boost::asio;
 
-struct A {
-  using allocator_type = A;
-  allocator_type get_allocator() const { return allocator_type(); }
-};
+struct no_executor
+{};
 
-/*
-template <typename T, typename Allocator = std::allocator<int>, typename...>
-Allocator get_associated_allocator(const T& t, const Allocator& a = Allocator(), ...)
+inline int associated_executor_test()
 {
-  return a;
-}
+  auto e1 = get_associated_executor(no_executor());
+  static_assert(std::is_same<decltype(e1), system_executor>::value);
 
-template <typename T, typename Allocator>
-typename std::enable_if<std::is_class_v<typename T::type>, typename T::type>::type get_associated_allocator(
-    const T& t, const Allocator& a)
-{
-  static_assert(std::is_member_function_pointer<decltype(&T::get_type)>::value);
-  return t.get_type();
-}
-*/
+  auto e2 = get_associated_executor(system_context());
+  static_assert(std::is_same<decltype(e2), system_executor>::value);
 
-int main()
-{
-  auto a = boost::asio::get_associated_allocator(A(), std::allocator<int>());
-  (void)a;
+  auto e3 = get_associated_executor(io_context());
+  static_assert(std::is_same<decltype(e3), io_context::executor_type>::value);
+
+  auto e4 = get_associated_executor(no_executor(), system_executor());
+  static_assert(std::is_same<decltype(e4), system_executor>::value);
+
+  auto e5 = get_associated_executor(io_context(), system_executor());
+  static_assert(std::is_same<decltype(e5), io_context::executor_type>::value);
+
+  auto e6 = get_associated_executor(no_executor(), io_context());
+  static_assert(std::is_same<decltype(e6), io_context::executor_type>::value);
+
+  // auto e7 = get_associated_executor(system_executor(), no_executor());
+
   return 0;
 }
+}  // namespace associated_executor
+
+int main() { return associated_executor::associated_executor_test(); }

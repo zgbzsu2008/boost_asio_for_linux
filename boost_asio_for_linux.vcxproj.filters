@@ -7,6 +7,9 @@
     <Filter Include="tests">
       <UniqueIdentifier>{b8932297-44d4-4e9f-b95d-9733535efed7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="c++17">
+      <UniqueIdentifier>{8c6a0780-8456-48bc-b0a9-44b1162d6625}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conditionally_enabled_event.hpp">
@@ -101,11 +104,19 @@
     <ClInclude Include="signal_blocker.hpp">
       <Filter>detail</Filter>
     </ClInclude>
-    <ClInclude Include="associated_allocator2.hpp" />
     <ClInclude Include="has_type_member.hpp">
       <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="executor.hpp" />
+    <ClInclude Include="is_executor.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="associated_allocator2.hpp">
+      <Filter>c++17</Filter>
+    </ClInclude>
+    <ClInclude Include="associated_executor2.hpp">
+      <Filter>c++17</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
@@ -119,6 +130,9 @@
     </ClCompile>
     <ClCompile Include="epoll_reactor.cpp" />
     <ClCompile Include="io_context.cpp" />
+    <ClCompile Include="test_associated_allocator.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

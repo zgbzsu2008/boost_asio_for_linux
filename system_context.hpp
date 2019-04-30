@@ -16,7 +16,7 @@ class system_context : public execution_context {
   ~system_context();
 
   using executor_type = system_executor;
-  executor_type get_executor();
+  executor_type get_executor() const;
 
   void stop();
   bool stopped() const;
