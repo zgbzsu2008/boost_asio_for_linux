@@ -8,46 +8,42 @@ namespace boost::asio
 {
 namespace detail
 {
-template <typename T, typename E, typename ...> struct associated_allocator_impl {
-  using type = E;
+template <typename> struct associated_allocator_check {
+  typedef void type;
+};
+
+template <typename T, typename E, typename = void> struct associated_allocator_impl {
+  typedef E type;
+
   static type get(const T&, const E& e) { return e; }
 };
 
-template <typename T, typename E> struct associated_allocator_impl<T, E, typename T::allocator_type> {
-  using type = typename T::allocator_type;
+template <typename T, typename E>
+struct associated_allocator_impl<T, E, typename associated_allocator_check<typename T::allocator_type>::type> {
+  typedef typename T::allocator_type type;
+
   static type get(const T& t, const E&) { return t.get_allocator(); }
 };
-
 }  // namespace detail
 
-// 参数T/Alloc相关的内存分配器
-template <typename T, typename Alloc = std::allocator<void>> struct associated_allocator {
-  using type = typename detail::associated_allocator_impl<T, Alloc>::type;
-  static type get(const T& t, const Alloc& a = Alloc())
+template <typename T, typename Allocator = std::allocator<void>> struct associated_allocator {
+  typedef typename detail::associated_allocator_impl<T, Allocator>::type type;
+
+  static type get(const T& t, const Allocator& a = Allocator())
   {
-    return detail::associated_allocator_impl<T, Alloc>::get(t, a);
+    return detail::associated_allocator_impl<T, Allocator>::get(t, a);
   }
 };
 
-// 参数T或者参数Alloc中get
-template <typename T, typename Alloc, typename ...>
-typename associated_allocator<T, Alloc>::type get_associated_allocator(const T& t, const Alloc& a)
-{
-  return associated_allocator<T, Alloc>::get(t, a);
-}
-
-// 参数T中get
-template <typename T, typename Alloc, typename T::allocator_type>
-inline typename associated_allocator<T, Alloc>::type get_associated_allocator(const T& t, const Alloc& a)
-{
-  return associated_allocator<T, Alloc>::get(t, a);
-}
-
-// 特化std::allocator<T>
-template <typename T>
-typename associated_allocator<T>::type get_associated_allocator(const T& t)
+template <typename T> inline typename associated_allocator<T>::type get_associated_allocator(const T& t)
 {
   return associated_allocator<T>::get(t);
+}
+
+template <typename T, typename Allocator>
+inline typename associated_allocator<T, Allocator>::type get_associated_allocator(const T& t, const Allocator& a)
+{
+  return associated_allocator<T, Allocator>::get(t, a);
 }
 
 template <typename T, typename Alloc = std::allocator<void>>

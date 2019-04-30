@@ -76,6 +76,7 @@
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
     <ClInclude Include="associated_allocator.hpp" />
+    <ClInclude Include="associated_allocator2.hpp" />
     <ClInclude Include="associated_executor.hpp" />
     <ClInclude Include="async_result.hpp" />
     <ClInclude Include="call_stack.hpp" />
@@ -85,10 +86,12 @@
     <ClInclude Include="error_code.hpp" />
     <ClInclude Include="event.hpp" />
     <ClInclude Include="execution_context.hpp" />
+    <ClInclude Include="executor.hpp" />
     <ClInclude Include="executor_op.hpp" />
     <ClInclude Include="fenced_block.hpp" />
     <ClInclude Include="global.hpp" />
     <ClInclude Include="handler_alloc_helpers.hpp" />
+    <ClInclude Include="has_type_member.hpp" />
     <ClInclude Include="io_context.hpp" />
     <ClInclude Include="mutex.hpp" />
     <ClInclude Include="noncopyable.hpp" />
@@ -103,6 +106,7 @@
     <ClInclude Include="select_interrupter.hpp" />
     <ClInclude Include="service_registry.hpp" />
     <ClInclude Include="service_registry_helpers.hpp" />
+    <ClInclude Include="signal_blocker.hpp" />
     <ClInclude Include="system_context.hpp" />
     <ClInclude Include="system_executor.hpp" />
     <ClInclude Include="thread.hpp" />

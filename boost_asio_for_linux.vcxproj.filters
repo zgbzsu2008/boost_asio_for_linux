@@ -98,6 +98,14 @@
     <ClInclude Include="service_registry_helpers.hpp">
       <Filter>detail</Filter>
     </ClInclude>
+    <ClInclude Include="signal_blocker.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="associated_allocator2.hpp" />
+    <ClInclude Include="has_type_member.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="executor.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

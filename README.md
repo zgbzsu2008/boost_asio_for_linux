@@ -118,7 +118,7 @@ void* allocate(thread_info_base* this_thread, std::size_t size)
 void deallocate(thread_info_base* this_thread, void* pointer, std::size_t size)
 ```
 
-####scheduler_operation
+#### scheduler_operation
 封装一个调度器操作完成函数 complete
 ```
 void (*)(void*, scheduler_operation*, const std::error_code&, std::size_t);
@@ -137,4 +137,36 @@ std::size_t bytes_transferred_;
 status perform() { return perform_func_(this); }
 ```
 
+#### executor_op
+执行器操作
+do_complete主要是分配空间保存handler的副本 然后执行副本
+```
+class executor_op : public Operation // 继承某个操作 默认scheduler_operation
+BOOST_ASIO_DEFINE_HANDLER_ALLOCATOR_PTR // 使用alloc分配handler
+Handler handler_;
+Alloc alloc_;
+void do_complete(void*, Operation*, const std::error_code&, std::size_t)
+```
 
+#### signal_blocker
+信号块
+```
+void block() // 保存
+void unblock() // 重置
+```
+
+#### call_stack
+```
+static thread_local context* top_;  // 每个线程都有其副本
+static Value* top() // 栈顶值
+static Value* contains(Key* k) // 根据key_查找值
+Value* next_by_key() const // 在函数递归调用时，查看栈内变量数据
+```
+
+#### recycling_allocator
+```
+template <typename U> struct rebind
+T* allocate(std::size_t n)
+void deallocate(T* p, std::size_t n)
+
+```

@@ -74,62 +74,70 @@ template <typename Handler, typename T> struct get_hook_allocator<Handler, std::
   static type get(Handler& handler, const std::allocator<T>&) { return type(handler); }
 };
 
-} 
+template <typename...> struct ptr;
 
-#define BOOST_ASIO_DEFINE_HANDLER_PTR(op) \
-struct ptr { \
-  Handler* h; \
-  op* v; \
-  op* p; \
-  ~ptr() { reset(); } \
-  static op* allocate(Handler& handler) { \
-    using alloc_type = associated_allocator_t<Handler>; \
-    using hook_type = typename get_hook_allocator<Handler, alloc_type>::type; \
-    using alloc_op = typename rebind_alloc<hook_type, op>::type; \
-    alloc_op a(get_hook_allocator<Handler, alloc_type>::get(handler, get_associated_allocator(handler))); \
-    return a.allocate(1); \
-  } \
-  void reset() { \
-    if (p) { \
-      p->~op(); \
-      p = 0; \
-    } \
-    if (v) { \
-      using alloc_type = associated_allocator_t<Handler>; \
-      using hook_type = typename get_hook_allocator<Handler, alloc_type>::type; \
-      using alloc_op = typename rebind_alloc<hook_type, op>::type; \
-      alloc_op a(get_hook_allocator<Handler, alloc_type>::get(*h, get_associated_allocator(*h))); \
-      a.deallocate(static_cast<op*>(v), 1); \
-      v = 0; \
-    } \
-  } \
-};\
+template <typename op, typename Handler, typename Alloc> struct ptr<op, Handler, Alloc> {
+  Handler* h;
+  op* v;
+  op* p;
+  ~ptr() { reset(); }
 
-#define BOOST_ASIO_DEFINE_HANDLER_ALLOCATOR_PTR(op) \
-struct ptr { \
-  const Alloc* a; \
-  void* v; \
-  op* p; \
-  ~ptr() { reset(); } \
-  static op* allocate(const Alloc& a) { \
-    using alloc_type = typename get_recycling_allocator<Alloc>::type; \
-    using alloc_op = typename rebind_alloc<alloc_type, op>::type; \
-    alloc_op a1(get_recycling_allocator<Alloc>::get(a)); \
-    return a1.allocate(1); \
-  } \
-  void reset() { \
-    if (p) { \
-      p->~op(); \
-      p = 0; \
-    } \
-    if (v) { \
-      using alloc_type = typename get_recycling_allocator<Alloc>::type; \
-      using alloc_op = typename rebind_alloc<alloc_type, op>::type; \
-      alloc_op a1(get_recycling_allocator<Alloc>::get(*a)); \
-      a1.deallocate(static_cast<op*>(v), 1); \
-      v = 0; \
-    } \
-  } \
-};\
+  static op* allocate(Handler& handler)
+  {
+    using alloc_type = associated_allocator_t<Handler>;
+    using hook_type = typename get_hook_allocator<Handler, alloc_type>::type;
+    using alloc_op = typename rebind_alloc<hook_type, op>::type;
+    alloc_op a(get_hook_allocator<Handler, alloc_type>::get(handler, get_associated_allocator(handler)));
+    return a.allocate(1);
+  }
+
+  void reset()
+  {
+    if (p) {
+      p->~op();
+      p = 0;
+    }
+    if (v) {
+      using alloc_type = associated_allocator_t<Handler>;
+      using hook_type = typename get_hook_allocator<Handler, alloc_type>::type;
+      using alloc_op = typename rebind_alloc<hook_type, op>::type;
+      alloc_op a(get_hook_allocator<Handler, alloc_type>::get(*h, get_associated_allocator(*h)));
+      a.deallocate(static_cast<op*>(v), 1);
+      v = 0;
+    }
+  }
+};
+
+// 使用Alloc创建一个op对象，自动回收
+template <typename op, typename Alloc> struct ptr<op, Alloc> {
+  const Alloc* a;
+  void* v;
+  op* p;
+  ~ptr() { reset(); }
+
+  static op* allocate(const Alloc& a)
+  {
+    using alloc_type = typename get_recycling_allocator<Alloc>::type;
+    using alloc_op = typename rebind_alloc<alloc_type, op>::type;
+    alloc_op a1(get_recycling_allocator<Alloc>::get(a));
+    return a1.allocate(1);
+  }
+
+  void reset()
+  {
+    if (p) {
+      p->~op();
+      p = 0;
+    }
+    if (v) {
+      using alloc_type = typename get_recycling_allocator<Alloc>::type;
+      using alloc_op = typename rebind_alloc<alloc_type, op>::type;
+      alloc_op a1(get_recycling_allocator<Alloc>::get(*a));
+      a1.deallocate(static_cast<op*>(v), 1);
+      v = 0;
+    }
+  }
+};
+}  // namespace boost::asio::detail
 
 #endif  // BOOST_ASIO_DETAIL_HANDLER_ALLOC_HELPERS_HPP

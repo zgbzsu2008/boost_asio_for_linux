@@ -14,6 +14,7 @@ template <typename Key, typename Value = unsigned char> class call_stack
   class context : private noncopyable
   {
    public:
+    // value=call_stack
     explicit context(Key* k) : key_(k)
     {
       value_ = reinterpret_cast<unsigned char*>(this);
@@ -21,18 +22,17 @@ template <typename Key, typename Value = unsigned char> class call_stack
       call_stack<Key, Value>::top = this;
     }
 
-    // 创建时context加入链表栈
+    // 创建时(k,v)入栈
     context(Key* k, Value& v) : key_(k), value_(&v)
     {
       next_ = call_stack<Key, Value>::top_;
       call_stack<Key, Value>::top_ = this;
     }
 
-    // 销毁时context移除链表栈
+    // 销毁时移除栈顶
     ~context() { call_stack<Key, Value>::top_ = next_; }
 
-    // 根据栈顶key_查找 在调用链表栈顶的下一个开始查找
-    // 一般用于在递归函数调用，查看递归栈内的数据信息
+    // 在函数递归调用时，查看栈内变量数据
     Value* next_by_key() const
     {
       for (context* elem = next_; elem != 0; elem = elem->next_) {
@@ -52,7 +52,6 @@ template <typename Key, typename Value = unsigned char> class call_stack
 
  public:
   friend class context;
-
   // 根据栈顶key_查找是否在调用链表栈中
   static Value* contains(Key* k)
   {
@@ -64,7 +63,7 @@ template <typename Key, typename Value = unsigned char> class call_stack
     return 0;
   }
 
-  // 调用链表栈顶值
+  // 栈顶值
   static Value* top() { return top_ ? top_->value_ : 0; }
 
  private:

@@ -8,6 +8,7 @@
 
 namespace boost::asio::detail
 {
+// recycling_allocator 可回收alloc
 template <typename T> class recycling_allocator
 {
  public:
@@ -34,6 +35,7 @@ template <typename T> class recycling_allocator
   }
 };
 
+// 特化void
 template <> class recycling_allocator<void>
 {
  public:
@@ -60,7 +62,7 @@ template <typename T> struct get_recycling_allocator<std::allocator<T>> {
 
 template <typename Alloc, typename T> struct rebind_alloc {
   using type = typename std::allocator_traits<Alloc>::template rebind_alloc<T>;
-  // type = Alloc<T>
+  // type = Alloc::rebind<T>::other = Alloc<T>
 };
 }  // namespace boost::asio::detail
 
