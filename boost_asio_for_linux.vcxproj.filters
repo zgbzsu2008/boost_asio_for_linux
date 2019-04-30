@@ -95,6 +95,9 @@
       <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="io_context.hpp" />
+    <ClInclude Include="service_registry_helpers.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />

@@ -26,7 +26,7 @@ class executor_op : public Operation
     Handler handler(std::move(o->handler_));
     p.reset();
     if (owner) {
-      std_fenced_block b(std_fenced_block::half);
+      detail::fenced_block b(detail::fenced_block::half);
       handler();
     }
   }

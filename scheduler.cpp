@@ -9,7 +9,7 @@
 #include "epoll_reactor.hpp"
 #include "execution_context.hpp"
 #include "scheduler_thread_info.hpp"
-#include "service_registry.hpp"
+#include "service_registry_helpers.hpp"
 
 namespace boost::asio::detail
 {

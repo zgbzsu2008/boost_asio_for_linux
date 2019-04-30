@@ -4,7 +4,8 @@
 #include "io_context.hpp"
 #include <iostream>
 #include "error_code.hpp"
-#include "service_registry.hpp"
+#include "service_registry_helpers.hpp"
+#include "throw_exception.hpp"
 
 #if defined(BOOST_ASIO_HAS_IOCP)
 #include "win_iocp_io_context.hpp"

@@ -11,6 +11,10 @@
 #include "async_result.hpp"
 #include "execution_context.hpp"
 #include "noncopyable.hpp"
+#include "fenced_block.hpp"
+#include "executor_op.hpp"
+#include "scheduler.hpp"
+#include "throw_exception.hpp"
 
 namespace boost::asio
 {

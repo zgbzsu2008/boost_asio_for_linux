@@ -35,6 +35,12 @@ class execution_context : private detail::noncopyable
   void shutdown();
   void destroy();
 
+  template <typename Service> friend Service& use_service(io_context& ioc);
+  template <typename Service> friend Service& use_service(execution_context& e);
+  template <typename Service, typename... Args> friend Service& make_service(execution_context& e, Args&&... args);
+  template <typename Service> friend void add_service(execution_context& e, Service* new_service);
+  template <typename Service> friend bool has_service(execution_context& e);
+
  private:
   boost::asio::detail::service_registry* service_registry_;
 };

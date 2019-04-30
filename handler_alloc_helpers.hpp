@@ -12,13 +12,13 @@ namespace handler_alloc_helpers
 template <typename Handler> inline void* allocate(std::size_t s, Handler& h)
 {
   using namespace boost::asio::detail;
-  return thread_info_base::allocate(thread_context::thread_call_stack::top();, s);
+  return thread_info_base::allocate(thread_context::thread_call_stack::top(), s);
 }
 
 template <typename Handler> void deallocate(void* p, std::size_t s, Handler& h)
 {
   using namespace boost::asio::detail;
-  thread_info_base::deallocate(thread_context::thread_call_stack::top();, p, s);
+  thread_info_base::deallocate(thread_context::thread_call_stack::top(), p, s);
 }
 }  // namespace handler_alloc_helpers
 
