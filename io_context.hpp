@@ -48,7 +48,7 @@ class io_context : public execution_context
 
   ~io_context();
 
-  executor_type get_executor() const;
+  executor_type get_executor();
 
   std::size_t run();
 
@@ -134,29 +134,29 @@ class io_context::executor_type
       return;
     }
 
-    using op = detail::executor_op<func_type, Alloc, detail::operation>;
+    /*using op = detail::executor_op<func_type, Alloc, detail::operation>;
     typename op::ptr p = {std::addressof(a), op::ptr::allocate(a), 0};
     p.p = new (p.v) op(std::move(func), a);
     io_context_.impl_.post_immediate_completion(p.p, false);
-    p.v = p.p = 0;
+    p.v = p.p = 0;*/
   }
   template <typename Function, typename Alloc> void post(Function&& func, const Alloc& a) const
   {
-    using func_type = typename std::decay_t<Function>;
+    /*using func_type = typename std::decay_t<Function>;
     using op = detail::executor_op<func_type, Alloc, detail::operation>;
     typename op::ptr p = {std::addressof(a), op::ptr::allocate(a), 0};
     p.p = new (p.v) op(std::move(func), a);
     io_context_.impl_.post_immediate_completion(p.p, false);
-    p.v = p.p = 0;
+    p.v = p.p = 0;*/
   }
   template <typename Function, typename Alloc> void defer(Function&& func, const Alloc& a) const
   {
-    using func_type = typename std::decay_t<Function>;
-    using op = detail::executor_op<func_type, Alloc, detail::operation>;
-    typename op::ptr p = {std::addressof(a), op::ptr::allocate(a), 0};
-    p.p = new (p.v) op(std::move(func), a);
-    io_context_.impl_.post_immediate_completion(p.p, true);
-    p.v = p.p = 0;
+    //using func_type = typename std::decay_t<Function>;
+    //using op = detail::executor_op<func_type, Alloc, detail::operation>;
+    //typename op::ptr p = {std::addressof(a), op::ptr::allocate(a), 0};
+    //p.p = new (p.v) op(std::move(func), a);
+    //io_context_.impl_.post_immediate_completion(p.p, true);
+    //p.v = p.p = 0;
   }
 
   bool running_in_this_thread() const;

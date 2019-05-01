@@ -95,6 +95,7 @@
     <ClInclude Include="has_type_member.hpp" />
     <ClInclude Include="io_context.hpp" />
     <ClInclude Include="is_executor.hpp" />
+    <ClInclude Include="is_executor2.hpp" />
     <ClInclude Include="mutex.hpp" />
     <ClInclude Include="noncopyable.hpp" />
     <ClInclude Include="object_pool.hpp" />

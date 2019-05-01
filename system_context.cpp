@@ -31,7 +31,7 @@ system_context::~system_context()
   threads_.join();
 }
 
-system_context::executor_type system_context::get_executor() const { return executor_type(); }
+system_context::executor_type system_context::get_executor() { return executor_type(); }
 
 void system_context::stop() { scheduler_.stop(); }
 

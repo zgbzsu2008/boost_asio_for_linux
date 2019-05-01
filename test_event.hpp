@@ -8,9 +8,7 @@
 #include "op_queue.hpp"
 #include "thread_group.hpp"
 
-#include <sys/socket.h>
-#include <unistd.h>
-
+namespace test_event {
 using namespace boost::asio;
 
 class object
@@ -88,12 +86,11 @@ class scheduler
   detail::op_queue<object> op_queue_;
 };
 
-inline int boost_asio_event()
+int main()
 {
   scheduler s;
   detail::thread_group group;
-  group.create_thread(std::bind(&scheduler::do_run, std::ref(s)),
-                      detail::thread::hardware_concurrency() + 2);
+  group.create_thread(std::bind(&scheduler::do_run, std::ref(s)), detail::thread::hardware_concurrency() + 2);
   for (int i = 0; i < 100; ++i) {
     std::cout << "tid= " << std::this_thread::get_id() << " push " << i << '\n';
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -101,3 +98,5 @@ inline int boost_asio_event()
   }
   return 0;
 }
+
+}  // namespace test_event

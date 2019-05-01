@@ -205,7 +205,7 @@ template <typename Executor, typename Alloc> class executor::impl : public execu
   Executor executor_;
   Alloc alloc_;
 
-  struct raw_mem : public noncopyable
+  struct raw_mem : public detail::noncopyable
   {
     alloc_type alloc_;
     impl* ptr_;

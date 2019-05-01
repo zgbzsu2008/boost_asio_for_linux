@@ -7,9 +7,6 @@
     <Filter Include="tests">
       <UniqueIdentifier>{b8932297-44d4-4e9f-b95d-9733535efed7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="c++17">
-      <UniqueIdentifier>{8c6a0780-8456-48bc-b0a9-44b1162d6625}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="conditionally_enabled_event.hpp">
@@ -111,11 +108,10 @@
     <ClInclude Include="is_executor.hpp">
       <Filter>detail</Filter>
     </ClInclude>
-    <ClInclude Include="associated_allocator2.hpp">
-      <Filter>c++17</Filter>
-    </ClInclude>
-    <ClInclude Include="associated_executor2.hpp">
-      <Filter>c++17</Filter>
+    <ClInclude Include="associated_allocator2.hpp" />
+    <ClInclude Include="associated_executor2.hpp" />
+    <ClInclude Include="is_executor2.hpp">
+      <Filter>detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

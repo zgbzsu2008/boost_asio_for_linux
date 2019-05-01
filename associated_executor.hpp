@@ -23,7 +23,8 @@ template <typename T, typename E>
 struct associated_executor_impl<T, E, typename associated_executor_check<typename T::executor_type>::type>
 {
   using type = typename T::executor_type;
-  static type get(const T& t, const E&) { return t.get_executor(); }
+
+  static type get(const T& t, const E&) { return const_cast<T*>(&t)->get_executor(); }
 };
 }  // namespace detail
 
@@ -48,12 +49,12 @@ inline typename associated_executor<T, Executor>::type get_associated_executor(
   return associated_executor<T, Executor>::get(t, ex);
 }
 
-template <typename T, typename ExecutionContext>
-inline typename associated_executor<T, typename ExecutionContext::executor_type>::type get_associated_executor(
-    const T& t, const ExecutionContext& ctx,
-    typename std::enable_if<std::is_convertible<ExecutionContext&, execution_context&>::value>::type* = 0)
+template <typename T, typename Context>
+inline typename associated_executor<T, typename Context::executor_type>::type get_associated_executor(
+    const T& t, Context& ctx,
+    typename std::enable_if<std::is_convertible<Context&, execution_context&>::value>::type* = 0)
 {
-  return associated_executor<T, typename ExecutionContext::executor_type>::get(t, ctx.get_executor());
+  return associated_executor<T, typename Context::executor_type>::get(t, ctx.get_executor());
 }
 
 template <typename T, typename Executor = system_executor>

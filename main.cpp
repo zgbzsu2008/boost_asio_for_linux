@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "associated_executor.hpp"
+#include "associated_executor2.hpp"
 #include "io_context.hpp"
 #include "service_registry_helpers.hpp"
 
@@ -26,11 +26,6 @@ inline int associated_executor_test()
 
   auto e5 = get_associated_executor(io_context(), system_executor());
   static_assert(std::is_same<decltype(e5), io_context::executor_type>::value);
-
-  auto e6 = get_associated_executor(no_executor(), io_context());
-  static_assert(std::is_same<decltype(e6), io_context::executor_type>::value);
-
-  // auto e7 = get_associated_executor(system_executor(), no_executor());
 
   return 0;
 }

@@ -17,7 +17,7 @@ struct has_alloc
   allocator_type get_allocator() const { return allocator_type(); }
 };
 
-inline int test_associated_allocator()
+int main()
 {
   auto a1 = get_associated_allocator(no_alloc());
   static_assert(std::is_same<decltype(a1), std::allocator<void>>::value);
