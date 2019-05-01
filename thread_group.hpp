@@ -13,16 +13,16 @@ class thread_group
   ~thread_group() { join(); }
 
   template <typename Function>
-  void create_thread(Function f)
+  void create_thread(Function&& func)
   {
-    first_ = new item(std::move(f), first_);
+    first_ = new item(std::forward<Function>(func), first_);
   }
 
   template <typename Function>
-  void create_thread(Function&& f, std::size_t num_threads)
+  void create_thread(Function&& func, std::size_t num_threads)
   {
     for (std::size_t i = 0; i < num_threads; ++i) {
-      create_thread(std::move(f));
+      create_thread(std::forward<Function>(func));
     }
   }
 
@@ -40,7 +40,7 @@ class thread_group
   struct item
   {
     template <typename Function>
-    explicit item(Function f, item* next = 0) : thread_(std::move(f)), next_(next)
+    explicit item(Function&& func, item* next = 0) : thread_(std::forward<Function>(func)), next_(next)
     {}
     detail::thread thread_;
     item* next_;

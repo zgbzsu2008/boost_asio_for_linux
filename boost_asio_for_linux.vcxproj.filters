@@ -1,17 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="detail">
-      <UniqueIdentifier>{7b05968f-c9c8-4797-8827-7d47e8d64665}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tests">
-      <UniqueIdentifier>{b8932297-44d4-4e9f-b95d-9733535efed7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="2.0">
       <UniqueIdentifier>{b23ae642-e549-4da9-8df6-c846f4b35dc8}</UniqueIdentifier>
     </Filter>
     <Filter Include="learn">
       <UniqueIdentifier>{6f5d3120-bd4c-4928-8811-2c45129b0ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="test">
+      <UniqueIdentifier>{b8932297-44d4-4e9f-b95d-9733535efed7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -129,19 +126,10 @@
     <ClInclude Include="system_executor.hpp">
       <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="io_context.hpp">
-      <Filter>learn</Filter>
-    </ClInclude>
     <ClInclude Include="executor.hpp">
       <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="epoll_reactor.hpp">
-      <Filter>learn</Filter>
-    </ClInclude>
     <ClInclude Include="executor_op.hpp">
-      <Filter>learn</Filter>
-    </ClInclude>
-    <ClInclude Include="scheduler.hpp">
       <Filter>learn</Filter>
     </ClInclude>
     <ClInclude Include="post.hpp" />
@@ -150,19 +138,16 @@
     <ClInclude Include="executor_work_guard2.hpp">
       <Filter>2.0</Filter>
     </ClInclude>
+    <ClInclude Include="io_context.hpp" />
+    <ClInclude Include="scheduler.hpp" />
+    <ClInclude Include="epoll_reactor.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_event.hpp">
-      <Filter>tests</Filter>
-    </ClCompile>
     <ClCompile Include="test_associated_allocator.hpp">
-      <Filter>tests</Filter>
+      <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="test_associated_executor.hpp">
-      <Filter>tests</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>tests</Filter>
+      <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="system_context.cpp">
       <Filter>learn</Filter>
@@ -170,15 +155,13 @@
     <ClCompile Include="execution_context.cpp">
       <Filter>learn</Filter>
     </ClCompile>
-    <ClCompile Include="epoll_reactor.cpp">
-      <Filter>learn</Filter>
+    <ClCompile Include="test_event.hpp">
+      <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="io_context.cpp">
-      <Filter>learn</Filter>
-    </ClCompile>
-    <ClCompile Include="scheduler.cpp">
-      <Filter>learn</Filter>
-    </ClCompile>
+    <ClCompile Include="io_context.cpp" />
+    <ClCompile Include="scheduler.cpp" />
+    <ClCompile Include="epoll_reactor.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

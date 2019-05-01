@@ -9,10 +9,10 @@ template <typename T, typename S>
 class async_result : private detail::noncopyable
 {
  public:
-  using handler_type = T;
+  using value_type = T;
   using result_type = void;
 
-  explicit async_result(handler_type& h) { (void)h; }
+  explicit async_result(value_type& h) { (void)h; }
   result_type get() {}
 };
 

@@ -23,7 +23,7 @@ typename detail::async_result_helper<T, void()>::result_type post(T&& token)
 
 template <typename T, typename E>
 typename detail::async_result_helper<T, void()>::result_type post(
-    E& ex, T&& token, typename std::enable_if<detail::is_executor<E>::value>::type*)
+    E& ex, T&& token, typename std::enable_if<detail::is_executor<E>::value>::type* =0)
 {
   using handler = typename detail::async_result_helper<T, void()>::value_type;
   async_completion<T, void()> init(std::forward<T>(token));
@@ -35,7 +35,7 @@ typename detail::async_result_helper<T, void()>::result_type post(
 
 template <typename T, typename E>
 typename detail::async_result_helper<T, void()>::result_type post(
-    E& ctx, T&& token, typename std::enable_if<std::is_convertible<E&, execution_context&>::value>::type*)
+    E& ctx, T&& token, typename std::enable_if<std::is_convertible<E&, execution_context&>::value>::type* =0)
 {
   using handler = typename detail::async_result_helper<T, void()>::value_type;
   async_completion<T, void()> init(std::forward<T>(token));
