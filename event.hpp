@@ -5,15 +5,14 @@
 #include <chrono>
 #include <condition_variable>
 #include <thread>
-
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class event : private noncopyable
 {
  public:
-  template <typename Lock> void signal_all(Lock& lock)
+  template <typename Lock>
+  void signal_all(Lock& lock)
   {
     assert(lock.locked());
     (void)lock;
@@ -21,9 +20,14 @@ class event : private noncopyable
     cond_.notify_all();
   }
 
-  template <typename Lock> void signal(Lock& lock) { this->signal_all(lock); }
+  template <typename Lock>
+  void signal(Lock& lock)
+  {
+    this->signal_all(lock);
+  }
 
-  template <typename Lock> void unlock_and_signal_one(Lock& lock)
+  template <typename Lock>
+  void unlock_and_signal_one(Lock& lock)
   {
     assert(lock.locked());
     state_ |= 1;
@@ -34,7 +38,8 @@ class event : private noncopyable
     }
   }
 
-  template <typename Lock> bool maybe_unlock_and_signal_one(Lock& lock)
+  template <typename Lock>
+  bool maybe_unlock_and_signal_one(Lock& lock)
   {
     assert(lock.locked());
     state_ |= 1;
@@ -47,14 +52,16 @@ class event : private noncopyable
     return false;
   }
 
-  template <typename Lock> void clear(Lock& lock)
+  template <typename Lock>
+  void clear(Lock& lock)
   {
     assert(lock.locked());
     (void)lock;
     state_ &= ~std::size_t(1);
   }
 
-  template <typename Lock> void wait(Lock& lock)
+  template <typename Lock>
+  void wait(Lock& lock)
   {
     assert(lock.locked());
     std::unique_lock<std::mutex> ulock(lock.mutex().mutex_, std::adopt_lock);
@@ -64,7 +71,8 @@ class event : private noncopyable
     }
   }
 
-  template <typename Lock> bool wait_for_usec(Lock& lock, long usec)
+  template <typename Lock>
+  bool wait_for_usec(Lock& lock, long usec)
   {
     assert(lock.locked());
     std::unique_lock<std::mutex> ulock(lock.mutex().mutex_, std::adopt_lock);
@@ -90,5 +98,4 @@ class event : private noncopyable
   std::condition_variable cond_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_EVENT_HPP

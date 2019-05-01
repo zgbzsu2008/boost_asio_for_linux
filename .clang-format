@@ -1,7 +1,5 @@
 # Visual Studio 生成的 .clang 格式文件
 
 BasedOnStyle: Google
-PointerAlignment: Right
 ColumnLimit: 120
 BreakBeforeBraces: Mozilla
-AlwaysBreakTemplateDeclarations:	false

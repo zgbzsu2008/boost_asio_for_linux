@@ -9,15 +9,21 @@
 #include "scheduler_operation.hpp"
 #include "select_interrupter.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class epoll_reactor : public execution_context_service_base<epoll_reactor>
 {
  private:
   using mutex = conditionally_enabled_mutex;
 
  public:
-  enum op_types { read_op = 0, write_op = 1, connect_op = 1, except_op = 2, max_ops = 3 };
+  enum op_types
+  {
+    read_op = 0,
+    write_op = 1,
+    connect_op = 1,
+    except_op = 2,
+    max_ops = 3
+  };
 
   class descriptor_state : operation
   {
@@ -42,7 +48,7 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
     static void do_complete(void* owner, operation* base, const std::error_code& ec, std::size_t bytes_transferred);
   };
-  using per_descriptor_data = descriptor_state*;
+  using ptr_descriptor_data = descriptor_state*;
   using socket_type = int;
 
   epoll_reactor(execution_context& ctx);
@@ -52,26 +58,26 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
   void init_task();
 
-  int register_descriptor(socket_type descriptor, per_descriptor_data& descriptor_data);
+  int register_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data);
 
-  int register_internal_descriptor(int op_type, socket_type descriptor, per_descriptor_data& descriptor_data,
+  int register_internal_descriptor(int op_type, socket_type descriptor, ptr_descriptor_data& descriptor_data,
                                    reactor_op* op);
 
-  void move_descriptor(socket_type descriptor, per_descriptor_data& target_descriptor_data,
-                       per_descriptor_data& source_descriptor_data);
+  void move_descriptor(socket_type descriptor, ptr_descriptor_data& target_descriptor_data,
+                       ptr_descriptor_data& source_descriptor_data);
 
   void post_immediate_completion(reactor_op* op, bool is_continuation);
 
-  void start_op(int op_type, socket_type descriptor, per_descriptor_data& descriptor_data, reactor_op* op,
+  void start_op(int op_type, socket_type descriptor, ptr_descriptor_data& descriptor_data, reactor_op* op,
                 bool is_continuation, bool allow_speculative);
 
-  void cancel_ops(socket_type descriptor, per_descriptor_data& descriptor_data);
+  void cancel_ops(socket_type descriptor, ptr_descriptor_data& descriptor_data);
 
-  void deregister_descriptor(socket_type descriptor, per_descriptor_data& descriptor_data, bool closing);
+  void deregister_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data, bool closing);
 
-  void deregister_internal_descriptor(socket_type descriptor, per_descriptor_data& descriptor_data);
+  void deregister_internal_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data);
 
-  void cleanup_descriptor_data(per_descriptor_data& descriptor_data);
+  void cleanup_descriptor_data(ptr_descriptor_data& descriptor_data);
 
   void run(long usec, op_queue<operation>& ops);
 
@@ -81,7 +87,7 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
   static int do_epoll_create();
   static int do_timerfd_create();
 
-  per_descriptor_data allocate_descriptor_state();
+  ptr_descriptor_data allocate_descriptor_state();
   void free_descriptor_state(descriptor_state* s);
 
   detail::scheduler& scheduler_;

@@ -3,20 +3,26 @@
 
 #include <limits>
 #include <memory>
-
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class thread_info_base : private noncopyable
 {
  public:
-  struct default_tag {
-    enum { mem_index = 0 };
+  struct default_tag
+  {
+    enum
+    {
+      mem_index = 0
+    };
   };
 
-  struct awaitee_tag {
-    enum { mem_index = 1 };
+  struct awaitee_tag
+  {
+    enum
+    {
+      mem_index = 1
+    };
   };
 
   thread_info_base()
@@ -87,11 +93,16 @@ class thread_info_base : private noncopyable
   }
 
  private:
-  enum { chunk_size = 4 };
-  enum { max_mem_index = 2 };
+  enum
+  {
+    chunk_size = 4
+  };
+  enum
+  {
+    max_mem_index = 2
+  };
   void* reusable_memory_[max_mem_index];
 };
-
 }  // namespace boost::asio::detail
 
 #endif

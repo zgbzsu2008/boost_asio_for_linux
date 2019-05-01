@@ -5,8 +5,7 @@
 
 #include "op_queue.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class scheduler;
 class scheduler_operation
 {
@@ -33,6 +32,4 @@ class scheduler_operation
 };
 using operation = scheduler_operation;
 }  // namespace boost::asio::detail
-
-
 #endif  // !BOOST_ASIO_DETAIL_SCHEDULER_OPERATION_HPP

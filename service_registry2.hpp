@@ -1,14 +1,18 @@
-#ifndef BOOST_ASIO_DETAIL_SERVICE_REGISTRY_HPP
-#define BOOST_ASIO_DETAIL_SERVICE_REGISTRY_HPP
+#ifndef BOOST_ASIO_DETAIL_SERVICE_REGISTRY2_HPP
+#define BOOST_ASIO_DETAIL_SERVICE_REGISTRY2_HPP
 
 #include <functional>
 #include <type_traits>
 #include <typeinfo>
 #include "execution_context.hpp"
+#include "has_type_member.hpp"
 #include "mutex.hpp"
 #include "noncopyable.hpp"
 
 namespace boost::asio::detail {
+HAS_TYPE_MEMBER(key_type);
+HAS_TYPE_MEMBER(id);
+
 template <typename T>
 class typeid_wrapper
 {};
@@ -42,7 +46,7 @@ class service_registry : private noncopyable
   Service& use_service()
   {
     execution_context::service::key key;
-    init_key<Service>(key, 0);
+    init_key<Service>(key);
     factory_type factory = service_registry::create<Service, execution_context>;
     return *static_cast<Service*>(do_use_service(key, factory, &owner_));
   }
@@ -51,7 +55,7 @@ class service_registry : private noncopyable
   Service& use_service(io_context& owner)
   {
     execution_context::service::key key;
-    init_key<Service>(key, 0);
+    init_key<Service>(key);
     factory_type factory = service_registry::create<Service, io_context>;
     return *static_cast<Service*>(do_use_service(key, factory, &owner));
   }
@@ -60,7 +64,7 @@ class service_registry : private noncopyable
   void add_service(Service* new_service)
   {
     execution_context::service::key key;
-    init_key<Service>(key, 0);
+    init_key<Service>(key);
     return do_add_service(key, new_service);
   }
 
@@ -68,37 +72,31 @@ class service_registry : private noncopyable
   bool has_service() const
   {
     execution_context::service::key key;
-    init_key<Service>(key, 0);
+    init_key<Service>(key);
     return do_has_service(key);
   }
 
  private:
   template <typename Service>
-  static void init_key(execution_context::service::key& key, ...)
+  static void init_key(execution_context::service::key& key)
   {
-    init_key_from_id(key, Service::id);
-  }
-
-  // Service::key_type 是 Service 基类或者自身
-  template <typename Service>
-  static void init_key(execution_context::service::key& key,
-                       typename std::enable_if<std::is_base_of<typename Service::key_type, Service>::value>::type*)
-  {
-    key.type_info_ = &typeid(typeid_wrapper<Service>);
-    key.id_ = 0;
-  }
-
-  static void init_key_from_id(execution_context::service::key& key, const execution_context::id& id)
-  {
-    key.type_info_ = 0;
-    key.id_ = &id;
-  }
-
-  template <typename Service>
-  static void init_key_from_id(execution_context::service::key& key, const service_id<Service>& /*id*/)
-  {
-    key.type_info_ = &typeid(typeid_wrapper<Service>);
-    key.id_ = 0;
+    if constexpr (has_type_key_type<Service>::value) {
+      static_assert(std::is_convertible<typename Service::key_type&, Service&>::value);
+      key.type_info_ = &typeid(typeid_wrapper<Service>);
+      key.id_ = 0;
+    } else if constexpr (has_type_id<Service>::value) {
+      if constexpr (std::is_same<typename Service::id&, execution_context::id&>::value) {
+        key.type_info_ = 0;
+        key.id_ = &execution_context::id{};
+      } else if constexpr (std::is_same<typename Service::id&, service_id<Service>&>::value) {
+        key.type_info_ = &typeid(typeid_wrapper<Service>);
+        key.id_ = 0;
+      } else {
+        static_assert(false, "service registery::init_key service id not executor_context::id or service_id<service>");
+      }
+    } else {
+      static_assert(false, "service registery::init_key service has not type id");
+    }
   }
 
   static bool keys_match(const execution_context::service::key& key1, const execution_context::service::key& key2)
@@ -189,4 +187,4 @@ class service_registry : private noncopyable
   execution_context::service* first_service_;
 };
 }  // namespace boost::asio::detail
-#endif  // !BOOST_ASIO_DETAIL_SERVICE_REGISTRY_HPP
+#endif  // !BOOST_ASIO_DETAIL_SERVICE_REGISTRY2_HPP

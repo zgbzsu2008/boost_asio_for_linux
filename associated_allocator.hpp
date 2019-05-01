@@ -6,7 +6,6 @@
 
 namespace boost::asio {
 namespace detail {
-
 template <typename>
 struct associated_allocator_check
 {
@@ -54,6 +53,5 @@ inline typename associated_allocator<T, Allocator>::type get_associated_allocato
 
 template <typename T, typename Alloc = std::allocator<void>>
 using associated_allocator_t = typename associated_allocator<T, Alloc>::type;
-
 }  // namespace boost::asio
 #endif  // BOOST_ASIO_ASSOCIATED_ALLOCATOR_HPP

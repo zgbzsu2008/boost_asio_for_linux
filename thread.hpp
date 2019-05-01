@@ -5,12 +5,13 @@
 
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class thread : private noncopyable
 {
  public:
-  template <typename Function> thread(Function f, unsigned int = 0) : thread_(f) {}
+  template <typename Function>
+  thread(Function f, unsigned int = 0) : thread_(f)
+  {}
 
   ~thread() { join(); }
 

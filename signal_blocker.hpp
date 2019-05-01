@@ -4,11 +4,9 @@
 #include <pthread.h>
 #include <signal.h>
 #include <csignal>
-
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class signal_blocker : private noncopyable
 {
  public:
@@ -20,14 +18,14 @@ class signal_blocker : private noncopyable
     if (!blocked_) {
       sigset_t new_mask;
       sigfillset(&new_mask);
-      blocked_ = (::pthread_sigmask(SIG_BLOCK, &new_mask, &old_mask_) == 0); // 保存
+      blocked_ = (::pthread_sigmask(SIG_BLOCK, &new_mask, &old_mask_) == 0);  // 保存
     }
   }
 
   void unblock()
   {
     if (blocked_) {
-      blocked_ = (::pthread_sigmask(SIG_BLOCK, &old_mask_, 0) != 0); // 重置
+      blocked_ = (::pthread_sigmask(SIG_BLOCK, &old_mask_, 0) != 0);  // 重置
     }
   }
 
@@ -36,5 +34,4 @@ class signal_blocker : private noncopyable
   sigset_t old_mask_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_SIGNAL_BLOCKER_HPP

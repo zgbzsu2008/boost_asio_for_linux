@@ -3,28 +3,45 @@
 
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
-template <typename Object> class object_pool;
-
+namespace boost::asio::detail {
+template <typename Object>
+class object_pool;
 class object_pool_access
 {
  public:
-  template <typename Object> static Object* create() { return new Object; }
+  template <typename Object>
+  static Object* create()
+  {
+    return new Object;
+  }
 
-  template <typename Object, typename Arg> static Object* create(Arg arg)
+  template <typename Object, typename Arg>
+  static Object* create(Arg arg)
   {
     return new Object(arg);
   }
 
-  template <typename Object> static void destory(Object* o) { delete o; }
+  template <typename Object>
+  static void destory(Object* o)
+  {
+    delete o;
+  }
 
-  template <typename Object> static Object*& next(Object* o) { return o->next_; }
+  template <typename Object>
+  static Object*& next(Object* o)
+  {
+    return o->next_;
+  }
 
-  template <typename Object> static Object*& prev(Object* o) { return o->prev_; }
+  template <typename Object>
+  static Object*& prev(Object* o)
+  {
+    return o->prev_;
+  }
 };
 
-template <class Object> class object_pool : noncopyable
+template <class Object>
+class object_pool : noncopyable
 {
  public:
   object_pool() : live_list_(0), free_list_(0) {}
@@ -56,7 +73,8 @@ template <class Object> class object_pool : noncopyable
     return o;
   }
 
-  template <typename Arg> Object* alloc(Arg arg)
+  template <typename Arg>
+  Object* alloc(Arg arg)
   {
     Object* o = free_list_;
     if (o) {
@@ -108,5 +126,4 @@ template <class Object> class object_pool : noncopyable
   Object* free_list_;
 };
 }  // namespace boost::asio::detail
-
 #endif  //! BOOST_ASIO_DETAIL_OBJECT_POOL_HPP

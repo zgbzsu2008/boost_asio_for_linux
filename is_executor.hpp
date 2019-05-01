@@ -4,7 +4,6 @@
 #include <type_traits>
 
 namespace boost::asio::detail {
-
 struct executor_memfns_base
 {
   void context();
@@ -15,42 +14,50 @@ struct executor_memfns_base
   void defer();
 };
 
-template <typename T> struct executor_memfns_derived : T, executor_memfns_base
+template <typename T>
+struct executor_memfns_derived : T, executor_memfns_base
 {};
 
-template <typename T, T> struct executor_memfns_check
+template <typename T, T>
+struct executor_memfns_check
 {};
 
-template <typename> char (&context_memfn_helper(...))[2];
+template <typename>
+char (&context_memfn_helper(...))[2];
 
 template <typename T>
 char context_memfn_helper(
     executor_memfns_check<void (executor_memfns_base::*)(), &executor_memfns_derived<T>::context>*);
 
-template <typename> char (&on_work_started_memfn_helper(...))[2];
+template <typename>
+char (&on_work_started_memfn_helper(...))[2];
 
 template <typename T>
 char on_work_started_memfn_helper(
     executor_memfns_check<void (executor_memfns_base::*)(), &executor_memfns_derived<T>::on_work_started>*);
 
-template <typename> char (&on_work_finished_memfn_helper(...))[2];
+template <typename>
+char (&on_work_finished_memfn_helper(...))[2];
 
 template <typename T>
 char on_work_finished_memfn_helper(
     executor_memfns_check<void (executor_memfns_base::*)(), &executor_memfns_derived<T>::on_work_finished>*);
 
-template <typename> char (&dispatch_memfn_helper(...))[2];
+template <typename>
+char (&dispatch_memfn_helper(...))[2];
 
 template <typename T>
 char dispatch_memfn_helper(
     executor_memfns_check<void (executor_memfns_base::*)(), &executor_memfns_derived<T>::dispatch>*);
 
-template <typename> char (&post_memfn_helper(...))[2];
+template <typename>
+char (&post_memfn_helper(...))[2];
 
 template <typename T>
 char post_memfn_helper(executor_memfns_check<void (executor_memfns_base::*)(), &executor_memfns_derived<T>::post>*);
 
-template <typename> char (&defer_memfn_helper(...))[2];
+template <typename>
+char (&defer_memfn_helper(...))[2];
 
 template <typename T>
 char defer_memfn_helper(executor_memfns_check<void (executor_memfns_base::*)(), &executor_memfns_derived<T>::defer>*);

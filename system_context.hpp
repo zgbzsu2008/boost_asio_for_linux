@@ -1,16 +1,14 @@
 #ifndef BOOST_ASIO_SYSTEM_CONTEXT_HPP
 #define BOOST_ASIO_SYSTEM_CONTEXT_HPP
 
-#include <system_error>
-
+#include "execution_context.hpp"
 #include "scheduler.hpp"
 #include "thread_group.hpp"
-#include "execution_context.hpp"
 
 namespace boost::asio {
-
 class system_executor;
-class system_context : public execution_context {
+class system_context : public execution_context
+{
  public:
   system_context();
   ~system_context();
@@ -20,7 +18,6 @@ class system_context : public execution_context {
 
   void stop();
   bool stopped() const;
-
   void join();
 
  private:
@@ -30,6 +27,5 @@ class system_context : public execution_context {
   detail::scheduler& scheduler_;
   detail::thread_group threads_;
 };
-}
-
-#endif // BOOST_ASIO_SYSTEM_CONTEXT_HPP
+}  // namespace boost::asio
+#endif  // BOOST_ASIO_SYSTEM_CONTEXT_HPP

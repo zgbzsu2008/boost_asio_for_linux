@@ -3,15 +3,17 @@
 
 #include "mutex.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class conditionally_enabled_mutex : private noncopyable
 {
  public:
   class scoped_lock : private noncopyable
   {
    public:
-    enum adopt_lock_t { adopt_lock };
+    enum adopt_lock_t
+    {
+      adopt_lock
+    };
 
     scoped_lock(conditionally_enabled_mutex& m, adopt_lock_t) : mutex_(m), locked_(m.enabled_) {}
 
@@ -59,7 +61,7 @@ class conditionally_enabled_mutex : private noncopyable
     bool locked_;
   };
 
-  explicit conditionally_enabled_mutex(bool on=true) : enabled_(on) {}
+  explicit conditionally_enabled_mutex(bool on = true) : enabled_(on) {}
 
   void lock()
   {
@@ -84,5 +86,4 @@ class conditionally_enabled_mutex : private noncopyable
   bool enabled_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_CONDITIONALLY_ENABLED_MUTEX_HPP

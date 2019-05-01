@@ -7,127 +7,177 @@
     <Filter Include="tests">
       <UniqueIdentifier>{b8932297-44d4-4e9f-b95d-9733535efed7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="2.0">
+      <UniqueIdentifier>{b23ae642-e549-4da9-8df6-c846f4b35dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="learn">
+      <UniqueIdentifier>{6f5d3120-bd4c-4928-8811-2c45129b0ab2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="conditionally_enabled_event.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="associated_allocator2.hpp">
+      <Filter>2.0</Filter>
     </ClInclude>
-    <ClInclude Include="conditionally_enabled_mutex.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="associated_executor2.hpp">
+      <Filter>2.0</Filter>
     </ClInclude>
-    <ClInclude Include="thread_group.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="object_pool.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="op_queue.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="event.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="mutex.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="noncopyable.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="scoped_lock.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="thread.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="fenced_block.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="global.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="error_code.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="throw_exception.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="select_interrupter.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="thread_info_base.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="scheduler_operation.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="scheduler_thread_info.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="reactor_op.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="execution_context.hpp" />
-    <ClInclude Include="service_registry.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="system_executor.hpp" />
-    <ClInclude Include="system_context.hpp" />
-    <ClInclude Include="scheduler.hpp">
-      <Filter>detail</Filter>
-    </ClInclude>
-    <ClInclude Include="thread_context.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="is_executor2.hpp">
+      <Filter>2.0</Filter>
     </ClInclude>
     <ClInclude Include="call_stack.hpp">
-      <Filter>detail</Filter>
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="executor_op.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="conditionally_enabled_event.hpp">
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="associated_allocator.hpp" />
-    <ClInclude Include="associated_executor.hpp" />
-    <ClInclude Include="async_result.hpp" />
-    <ClInclude Include="epoll_reactor.hpp" />
-    <ClInclude Include="handler_alloc_helpers.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="conditionally_enabled_mutex.hpp">
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="recycling_allocator.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="error_code.hpp">
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="io_context.hpp" />
-    <ClInclude Include="service_registry_helpers.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="event.hpp">
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="signal_blocker.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="global.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="fenced_block.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="is_executor.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="mutex.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="op_queue.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="noncopyable.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="object_pool.hpp">
+      <Filter>learn</Filter>
     </ClInclude>
     <ClInclude Include="has_type_member.hpp">
-      <Filter>detail</Filter>
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="executor.hpp" />
-    <ClInclude Include="is_executor.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="recycling_allocator.hpp">
+      <Filter>learn</Filter>
     </ClInclude>
-    <ClInclude Include="associated_allocator2.hpp" />
-    <ClInclude Include="associated_executor2.hpp" />
-    <ClInclude Include="is_executor2.hpp">
-      <Filter>detail</Filter>
+    <ClInclude Include="scoped_lock.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="thread.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_group.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_info_base.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="signal_blocker.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="select_interrupter.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="throw_exception.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="thread_context.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="async_result.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="associated_allocator.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="associated_executor.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="service_registry_helpers.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="service_registry2.hpp">
+      <Filter>2.0</Filter>
+    </ClInclude>
+    <ClInclude Include="service_registry.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="scheduler_thread_info.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="scheduler_operation.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="reactor_op.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="handler_alloc_helpers.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="system_context.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="execution_context.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="system_executor.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="io_context.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="executor.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="epoll_reactor.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="executor_op.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="scheduler.hpp">
+      <Filter>learn</Filter>
+    </ClInclude>
+    <ClInclude Include="post.hpp" />
+    <ClInclude Include="executor_work_guard.hpp" />
+    <ClInclude Include="work_dispatcher.hpp" />
+    <ClInclude Include="executor_work_guard2.hpp">
+      <Filter>2.0</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="test_event.hpp">
       <Filter>tests</Filter>
     </ClCompile>
-    <ClCompile Include="execution_context.cpp" />
-    <ClCompile Include="system_context.cpp" />
-    <ClCompile Include="scheduler.cpp">
-      <Filter>detail</Filter>
-    </ClCompile>
-    <ClCompile Include="epoll_reactor.cpp" />
-    <ClCompile Include="io_context.cpp" />
-    <ClCompile Include="test_associated_allocator.cpp">
+    <ClCompile Include="test_associated_allocator.hpp">
       <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="test_associated_executor.hpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>tests</Filter>
+    </ClCompile>
+    <ClCompile Include="system_context.cpp">
+      <Filter>learn</Filter>
+    </ClCompile>
+    <ClCompile Include="execution_context.cpp">
+      <Filter>learn</Filter>
+    </ClCompile>
+    <ClCompile Include="epoll_reactor.cpp">
+      <Filter>learn</Filter>
+    </ClCompile>
+    <ClCompile Include="io_context.cpp">
+      <Filter>learn</Filter>
+    </ClCompile>
+    <ClCompile Include="scheduler.cpp">
+      <Filter>learn</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -10,8 +10,7 @@
 #include "scheduler.hpp"
 #include "service_registry_helpers.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 epoll_reactor::epoll_reactor(execution_context& ctx)
     : execution_context_service_base(ctx),
       scheduler_(use_service<scheduler>(ctx)),
@@ -62,7 +61,7 @@ void epoll_reactor::shutdown()
 
 void epoll_reactor::init_task() { scheduler_.init_task(); }
 
-int epoll_reactor::register_descriptor(socket_type descriptor, per_descriptor_data& descriptor_data)
+int epoll_reactor::register_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data)
 {
   descriptor_data = allocate_descriptor_state();
   {
@@ -90,7 +89,7 @@ int epoll_reactor::register_descriptor(socket_type descriptor, per_descriptor_da
 }
 
 int epoll_reactor::register_internal_descriptor(int op_type, socket_type descriptor,
-                                                per_descriptor_data& descriptor_data, reactor_op* op)
+                                                ptr_descriptor_data& descriptor_data, reactor_op* op)
 {
   descriptor_data = allocate_descriptor_state();
   {
@@ -114,8 +113,8 @@ int epoll_reactor::register_internal_descriptor(int op_type, socket_type descrip
   return 0;
 }
 
-void epoll_reactor::move_descriptor(socket_type descriptor, per_descriptor_data& target_descriptor_data,
-                                    per_descriptor_data& source_descriptor_data)
+void epoll_reactor::move_descriptor(socket_type descriptor, ptr_descriptor_data& target_descriptor_data,
+                                    ptr_descriptor_data& source_descriptor_data)
 {
   target_descriptor_data = source_descriptor_data;
   source_descriptor_data = 0;
@@ -126,12 +125,11 @@ void epoll_reactor::post_immediate_completion(reactor_op* op, bool is_continuati
   scheduler_.post_immediate_completion(op, is_continuation);
 }
 
-void epoll_reactor::start_op(int op_type, socket_type descriptor, per_descriptor_data& descriptor_data, reactor_op* op,
+void epoll_reactor::start_op(int op_type, socket_type descriptor, ptr_descriptor_data& descriptor_data, reactor_op* op,
                              bool is_continuation, bool allow_speculative)
-{
-}
+{}
 
-void epoll_reactor::cancel_ops(socket_type, per_descriptor_data& descriptor_data)
+void epoll_reactor::cancel_ops(socket_type, ptr_descriptor_data& descriptor_data)
 {
   if (!descriptor_data) {
     return;
@@ -151,7 +149,7 @@ void epoll_reactor::cancel_ops(socket_type, per_descriptor_data& descriptor_data
   scheduler_.post_deferred_completions(ops);
 }
 
-void epoll_reactor::deregister_descriptor(socket_type descriptor, per_descriptor_data& descriptor_data, bool closing)
+void epoll_reactor::deregister_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data, bool closing)
 {
   if (!descriptor_data) {
     return;
@@ -170,7 +168,7 @@ void epoll_reactor::deregister_descriptor(socket_type descriptor, per_descriptor
     for (int i = 0; i < max_ops; ++i) {
       while (!descriptor_data->op_queue_[i].empty()) {
         reactor_op* op = descriptor_data->op_queue_[i].front();
-        op->ec_ = error_code::operation_aborted;
+        op->ec_ = detail::error_code::operation_aborted;
         descriptor_data->op_queue_[i].pop();
         ops.push(op);
       }
@@ -186,7 +184,7 @@ void epoll_reactor::deregister_descriptor(socket_type descriptor, per_descriptor
   }
 }
 
-void epoll_reactor::deregister_internal_descriptor(socket_type descriptor, per_descriptor_data& descriptor_data)
+void epoll_reactor::deregister_internal_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data)
 {
   if (!descriptor_data) {
     return;
@@ -211,7 +209,7 @@ void epoll_reactor::deregister_internal_descriptor(socket_type descriptor, per_d
   }
 }
 
-void epoll_reactor::cleanup_descriptor_data(per_descriptor_data& descriptor_data)
+void epoll_reactor::cleanup_descriptor_data(ptr_descriptor_data& descriptor_data)
 {
   if (descriptor_data) {
     free_descriptor_state(descriptor_data);
@@ -247,7 +245,7 @@ int epoll_reactor::do_timerfd_create()
   return fd;
 }
 
-epoll_reactor::per_descriptor_data epoll_reactor::allocate_descriptor_state()
+epoll_reactor::ptr_descriptor_data epoll_reactor::allocate_descriptor_state()
 {
   mutex::scoped_lock lock(registered_descriptors_mutex_);
   return registered_descriptors_.alloc(scheduler_.concurrency_hint() > 1);
@@ -296,8 +294,7 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
 
 epoll_reactor::descriptor_state::descriptor_state(bool locking)
     : operation(&epoll_reactor::descriptor_state::do_complete), mutex_(locking)
-{
-}
+{}
 
 void epoll_reactor::descriptor_state::do_complete(void* owner, operation* base, const std::error_code& ec,
                                                   std::size_t bytes_transferred)
@@ -311,7 +308,8 @@ void epoll_reactor::descriptor_state::do_complete(void* owner, operation* base, 
   }
 }
 
-struct epoll_reactor::perform_io_cleanup_on_block_exit {
+struct epoll_reactor::perform_io_cleanup_on_block_exit
+{
   explicit perform_io_cleanup_on_block_exit(epoll_reactor* r) : reactor_(r), first_op_(0) {}
   ~perform_io_cleanup_on_block_exit()
   {

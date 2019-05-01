@@ -5,12 +5,11 @@
 #include <exception>
 #include <memory>
 #include <typeinfo>
-
 #include "execution_context.hpp"
+#include "executor_op.hpp"
 #include "handler_alloc_helpers.hpp"
 #include "noncopyable.hpp"
 #include "scheduler_operation.hpp"
-#include "executor_op.hpp"
 
 namespace boost::asio {
 class bad_executor : std::exception
@@ -28,9 +27,11 @@ class executor
   executor(const executor& other) : impl_(other.clone()) {}
   executor(executor&& other) : impl_(other.impl_) { other.impl_ = 0; }
 
-  template <typename Executor> executor(Executor e);
+  template <typename Executor>
+  executor(Executor e);
 
-  template <typename Executor, typename Alloc> executor(std::allocator_arg_t, const Alloc& a, Executor e);
+  template <typename Executor, typename Alloc>
+  executor(std::allocator_arg_t, const Alloc& a, Executor e);
 
   ~executor() { destroy(); }
 
@@ -56,7 +57,8 @@ class executor
     return *this;
   }
 
-  template <typename Executor> executor& operator=(Executor e)
+  template <typename Executor>
+  executor& operator=(Executor e)
   {
     executor tmp(e);
     destroy();
@@ -70,27 +72,35 @@ class executor
   void on_work_finished() const { get_impl()->on_work_finished(); }
 
   // @func type = void()
-  template <typename Function, typename Alloc> void dispatch(Function&& func, const Alloc& a) const
+  template <typename Function, typename Alloc>
+  void dispatch(Function&& func, const Alloc& a) const
   {
     get_impl()->dispatch(function(func, a));
   }
 
-  template <typename Function, typename Alloc> void post(Function&& func, const Alloc& a) const
+  template <typename Function, typename Alloc>
+  void post(Function&& func, const Alloc& a) const
   {
     get_impl()->post(function(func, a));
   }
 
-  template <typename Function, typename Alloc> void defer(Function&& func, const Alloc& a) const
+  template <typename Function, typename Alloc>
+  void defer(Function&& func, const Alloc& a) const
   {
     get_impl()->defer(function(func, a));
   }
 
  private:
   using type_id_result_type = const std::type_info&;
-  template <typename T> static type_id_result_type type_id() { return typeid(T); }
+  template <typename T>
+  static type_id_result_type type_id()
+  {
+    return typeid(T);
+  }
 
   class function;
-  template <typename, typename> class impl;
+  template <typename, typename>
+  class impl;
   friend class system_executor;
 
   class impl_base
@@ -138,9 +148,8 @@ class executor
   impl_base* impl_;
 };
 
-template <typename Executor> inline executor::executor(Executor e) {}
-
-template <typename Executor, typename Alloc> class executor::impl : public executor::impl_base
+template <typename Executor, typename Alloc>
+class executor::impl : public executor::impl_base
 {
  public:
   using alloc_type = typename std::allocator_traits<Alloc>::template rebind_alloc<impl>;
@@ -223,14 +232,13 @@ template <typename Executor, typename Alloc> class executor::impl : public execu
 class executor::function
 {
  public:
-  template <typename F, typename Alloc> explicit function(F& func, const Alloc& a)
+  template <typename F, typename Alloc>
+  explicit function(F&& func, const Alloc& a)
   {
-    /*using op = detail::executor_op<F, Alloc>;
-    using ptr_type = detail::ptr<op, Alloc>;
-    ptr_type ptr;
-    typename ptr p = {std::addressof(a), op::ptr::allocate(a), 0};
-    op_ = new (p.v) op(func, a);
-    p.v = 0;*/
+    using op = detail::executor_op<F, Alloc>;
+    typename op::ptr p = {std::addressof(a), op::ptr::allocate(a), 0};
+    op_ = new (p.v) op(std::forward<F>(func), a);
+    p.v = 0;
   }
 
   function(function&& other) : op_(other.op_) { other.op_ = 0; }
@@ -245,14 +253,14 @@ class executor::function
   void operator()()
   {
     if (op_) {
-      detail::scheduler_operation* op = op_;
+      detail::operation* op = op_;
       op_ = 0;
       op->complete(this, std::error_code(), 0);
     }
   }
 
  private:
-  detail::scheduler_operation* op_;
+  detail::operation* op_;
 };
 
 /*

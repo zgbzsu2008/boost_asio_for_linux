@@ -7,8 +7,7 @@
 #include <unistd.h>
 #include <system_error>
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class select_interrupter
 {
  public:
@@ -63,5 +62,4 @@ class select_interrupter
   int fd_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_SELECT_INTERRUPTER_HPP

@@ -7,9 +7,7 @@
 #include "system_executor.hpp"
 
 namespace boost::asio {
-
 HAS_TYPE_MEMBER(executor_type);
-
 template <typename T, typename Executor = system_executor>
 auto get_associated_executor(const T& t, const Executor& ex = Executor())
 {
@@ -23,7 +21,5 @@ auto get_associated_executor(const T& t, const Executor& ex = Executor())
     return ex;
   }
 }
-
 }  // namespace boost::asio
-
 #endif  // !BOOST_ASIO_ASSOCIATED_EXECUTOR_HPP

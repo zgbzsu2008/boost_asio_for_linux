@@ -89,6 +89,8 @@
     <ClInclude Include="execution_context.hpp" />
     <ClInclude Include="executor.hpp" />
     <ClInclude Include="executor_op.hpp" />
+    <ClInclude Include="executor_work_guard.hpp" />
+    <ClInclude Include="executor_work_guard2.hpp" />
     <ClInclude Include="fenced_block.hpp" />
     <ClInclude Include="global.hpp" />
     <ClInclude Include="handler_alloc_helpers.hpp" />
@@ -100,6 +102,7 @@
     <ClInclude Include="noncopyable.hpp" />
     <ClInclude Include="object_pool.hpp" />
     <ClInclude Include="op_queue.hpp" />
+    <ClInclude Include="post.hpp" />
     <ClInclude Include="reactor_op.hpp" />
     <ClInclude Include="recycling_allocator.hpp" />
     <ClInclude Include="scheduler.hpp" />
@@ -108,6 +111,7 @@
     <ClInclude Include="scoped_lock.hpp" />
     <ClInclude Include="select_interrupter.hpp" />
     <ClInclude Include="service_registry.hpp" />
+    <ClInclude Include="service_registry2.hpp" />
     <ClInclude Include="service_registry_helpers.hpp" />
     <ClInclude Include="signal_blocker.hpp" />
     <ClInclude Include="system_context.hpp" />
@@ -117,6 +121,7 @@
     <ClInclude Include="thread_group.hpp" />
     <ClInclude Include="thread_info_base.hpp" />
     <ClInclude Include="throw_exception.hpp" />
+    <ClInclude Include="work_dispatcher.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="epoll_reactor.cpp" />
@@ -125,7 +130,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="system_context.cpp" />
-    <ClCompile Include="test_associated_allocator.cpp" />
+    <ClCompile Include="test_associated_allocator.hpp" />
+    <ClCompile Include="test_associated_executor.hpp" />
     <ClCompile Include="test_event.hpp" />
   </ItemGroup>
   <ItemGroup>

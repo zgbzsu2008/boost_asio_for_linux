@@ -3,12 +3,15 @@
 
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
-template <typename T> class scoped_lock : private noncopyable
+namespace boost::asio::detail {
+template <typename T>
+class scoped_lock : private noncopyable
 {
  public:
-  enum adopt_lock_t { adopt_lock };
+  enum adopt_lock_t
+  {
+    adopt_lock
+  };
 
   scoped_lock(T& m, adopt_lock_t) : mutex_(m), locked_(true) {}
 

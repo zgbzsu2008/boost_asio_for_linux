@@ -1,5 +1,3 @@
-#include <iostream>
-#include <string>
 #include "associated_allocator.hpp"
 //#include "associated_allocator2.hpp"
 #include "recycling_allocator.hpp"
@@ -17,7 +15,7 @@ struct has_alloc
   allocator_type get_allocator() const { return allocator_type(); }
 };
 
-int main()
+inline int test_associated_allocator()
 {
   auto a1 = get_associated_allocator(no_alloc());
   static_assert(std::is_same<decltype(a1), std::allocator<void>>::value);

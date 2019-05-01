@@ -4,30 +4,25 @@
 #include <algorithm>
 #include <atomic>
 #include <memory>
-
 #include "conditionally_enabled_event.hpp"
 #include "conditionally_enabled_mutex.hpp"
 #include "execution_context.hpp"
 #include "op_queue.hpp"
 #include "scheduler_operation.hpp"
-#include "thread_context.hpp"
 #include "thread.hpp"
+#include "thread_context.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 struct scheduler_thread_info;
-
 class epoll_reactor;
-
 class scheduler : public execution_context_service_base<scheduler>, public thread_context
 {
  public:
   using operation = scheduler_operation;
 
   explicit scheduler(execution_context &ctx,
-                     int concurrency_hint = std::max(2, int(2 *thread::hardware_concurrency())));
+                     int concurrency_hint = std::max(2, int(2 * detail::thread::hardware_concurrency())));
   void shutdown();
-
   void init_task();
 
   std::size_t run(std::error_code &ec);
@@ -83,7 +78,8 @@ class scheduler : public execution_context_service_base<scheduler>, public threa
 
   epoll_reactor *task_;
 
-  struct task_operation : operation {
+  struct task_operation : operation
+  {
     task_operation() : operation(0) {}
   } task_operation_;
 

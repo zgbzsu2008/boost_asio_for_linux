@@ -7,12 +7,6 @@
 #include "service_registry_helpers.hpp"
 #include "throw_exception.hpp"
 
-#if defined(BOOST_ASIO_HAS_IOCP)
-#include "win_iocp_io_context.hpp"
-#else
-#include "scheduler.hpp"
-#endif
-
 namespace boost::asio
 {
 io_context::io_context() : impl_(add_impl(new impl_type(*this, std::max(2U, std::thread::hardware_concurrency() * 2))))
@@ -89,12 +83,6 @@ void io_context::executor_type::on_work_started() const { io_context_.impl_.work
 void io_context::executor_type::on_work_finished() const { io_context_.impl_.work_finished(); }
 
 bool io_context::executor_type::running_in_this_thread() const { return io_context_.impl_.can_dispatch(); }
-
-io_context::service::service(boost::asio::io_context& owner) : execution_context::service(owner) {}
-
-io_context::service::~service() {}
-
-void io_context::service::shutdown() {}
 
 }  // namespace boost::asio
 

@@ -4,7 +4,6 @@
 #include <type_traits>
 
 namespace boost::asio::detail {
-
 template <typename T>
 struct is_executor_class
     : public std::integral_constant<

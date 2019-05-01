@@ -4,8 +4,7 @@
 #include "conditionally_enabled_mutex.hpp"
 #include "event.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 class conditionally_enabled_event : private noncopyable
 {
  public:
@@ -69,5 +68,4 @@ class conditionally_enabled_event : private noncopyable
   detail::event event_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_CONDITIONALLY_ENABLED_EVENT_HPP

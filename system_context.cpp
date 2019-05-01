@@ -1,12 +1,13 @@
 #ifndef BOOST_ASIO_SYSTEM_CONTEXT_IPP
 #define BOOST_ASIO_SYSTEM_CONTEXT_IPP
 
+#include <system_error>
 #include "system_context.hpp"
 #include "system_executor.hpp"
 
-namespace boost::asio
+namespace boost::asio {
+struct system_context::thread_function
 {
-struct system_context::thread_function {
   detail::scheduler* scheduler_;
   void operator()()
   {
@@ -43,5 +44,4 @@ void system_context::join()
   threads_.join();
 }
 }  // namespace boost::asio
-
 #endif  // !BOOST_ASIO_SYSTEM_CONTEXT_IPP

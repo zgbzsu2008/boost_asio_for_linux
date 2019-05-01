@@ -4,57 +4,54 @@
 #include <iostream>
 #include <type_traits>
 
-#include "scheduler.hpp"
-
 #include "epoll_reactor.hpp"
 #include "execution_context.hpp"
+#include "scheduler.hpp"
 #include "scheduler_thread_info.hpp"
 #include "service_registry_helpers.hpp"
 
-namespace boost::asio::detail
-{
+namespace boost::asio::detail {
 // 私有队列+task_operation_ push到公有队列
-struct scheduler::task_cleanup {
+struct scheduler::task_cleanup
+{
   ~task_cleanup()
   {
-    std::cout << "scheduler::task_cleanup(): works= " << scheduler_->outstanding_work_ << '/'
-              << this_thread->private_outstanding_work << '\n';
-
-    if (this_thread->private_outstanding_work > 0) {
-      scheduler_->outstanding_work_ += this_thread->private_outstanding_work;
+    if (this_thread_->private_outstanding_work > 0) {
+      scheduler_->outstanding_work_ += this_thread_->private_outstanding_work;
     }
-    this_thread->private_outstanding_work = 0;
+    this_thread_->private_outstanding_work = 0;
 
     lock_->lock();
-    scheduler_->op_queue_.push(this_thread->private_op_queue);
+    scheduler_->op_queue_.push(this_thread_->private_op_queue);
     scheduler_->task_interrupted_ = true;
     scheduler_->op_queue_.push(&scheduler_->task_operation_);
   }
 
   scheduler *scheduler_;
   mutex::scoped_lock *lock_;
-  thread_info *this_thread;
+  thread_info *this_thread_;
 };
 
 // 私有队列push到公有队列，修改outstanding_work_
-struct scheduler::work_cleanup {
+struct scheduler::work_cleanup
+{
   ~work_cleanup()
   {
-    std::cout << "scheduler::task_cleanup(): works= " << scheduler_->outstanding_work_ << '/'
-              << this_thread->private_outstanding_work << '\n';
-    if (this_thread->private_outstanding_work > 0) {
-      scheduler_->outstanding_work_ += this_thread->private_outstanding_work;
+    if (this_thread_->private_outstanding_work > 0) {
+      scheduler_->outstanding_work_ += this_thread_->private_outstanding_work;
     }
-    this_thread->private_outstanding_work = 0;
-
+    this_thread_->private_outstanding_work = 0;
     scheduler_->work_finished();
-    lock_->lock();
-    scheduler_->op_queue_.push(this_thread->private_op_queue);
+
+    if (!this_thread_->private_op_queue.empty()) {
+      lock_->lock();
+      scheduler_->op_queue_.push(this_thread_->private_op_queue);
+    }
   }
 
   scheduler *scheduler_;
   mutex::scoped_lock *lock_;
-  thread_info *this_thread;
+  thread_info *this_thread_;
 };
 
 scheduler::scheduler(execution_context &ctx, int concurrency_hint)
@@ -67,9 +64,7 @@ scheduler::scheduler(execution_context &ctx, int concurrency_hint)
       stopped_(false),
       shutdown_(false),
       concurrency_hint_(concurrency_hint)
-{
-  std::cout << "scheduler(): one thread? " << one_thread_ << " mutex islock? " << mutex_.enabled() << '\n';
-}
+{}
 
 void scheduler::shutdown()
 {
@@ -89,7 +84,6 @@ void scheduler::shutdown()
 
 void scheduler::init_task()
 {
-  std::cout << "scheduler::init_task(): \n";
   mutex::scoped_lock lock(mutex_);
   if (!shutdown_ && !task_) {
     task_ = &use_service<epoll_reactor>(this->context());
@@ -100,7 +94,6 @@ void scheduler::init_task()
 
 std::size_t scheduler::run(std::error_code &ec)
 {
-  std::cout << "scheduler::run(): run in this thread tid= " << std::this_thread::get_id() << '\n';
   ec = std::error_code();
   if (outstanding_work_ == 0) {
     stop();
@@ -118,7 +111,6 @@ std::size_t scheduler::run(std::error_code &ec)
       ++n;
     }
   }
-  std::cout << "scheduler::run(): stop in this thread tid= " << std::this_thread::get_id() << '\n';
   return n;
 }
 
@@ -228,9 +220,16 @@ void scheduler::compensating_work_started()
   ++(static_cast<thread_info *>(this_thread)->private_outstanding_work);
 }
 
+void scheduler::do_dispatch(operation *op)
+{
+  work_started();
+  mutex::scoped_lock lock(mutex_);
+  op_queue_.push(op);
+  wake_one_thread_and_unlock(lock);
+}
+
 void scheduler::post_immediate_completion(operation *op, bool is_continuation)
 {
-  std::cout << "scheduler::post_immediate_completion(): is_continuation? " << is_continuation << '\n';
   if (one_thread_ || is_continuation) {
     if (thread_info_base *this_thread = thread_call_stack::contains(this)) {
       ++(static_cast<thread_info *>(this_thread)->private_outstanding_work);
@@ -273,6 +272,12 @@ void scheduler::post_deferred_completions(op_queue<operation> &ops)
   mutex::scoped_lock lock(mutex_);
   op_queue_.push(ops);
   wake_one_thread_and_unlock(lock);
+}
+
+void scheduler::abandon_operations(op_queue<operation> &ops)
+{
+  op_queue<scheduler::operation> ops2;
+  ops2.push(ops);
 }
 
 std::size_t scheduler::do_run_one(mutex::scoped_lock &lock, thread_info &this_thread, const std::error_code &ec)

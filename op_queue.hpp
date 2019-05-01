@@ -3,14 +3,14 @@
 
 #include "noncopyable.hpp"
 
-namespace boost::asio::detail
-{
-template <typename Operation> class op_queue;
-
+namespace boost::asio::detail {
+template <typename Operation>
+class op_queue;
 class op_queue_access
 {
  public:
-  template <typename Operation> static Operation* next(Operation* o)
+  template <typename Operation>
+  static Operation* next(Operation* o)
   {
     return static_cast<Operation*>(o->next_);
   }
@@ -21,17 +21,27 @@ class op_queue_access
     o1->next_ = o2;
   }
 
-  template <typename Operation> static void destroy(Operation* o) { o->destroy(); }
+  template <typename Operation>
+  static void destroy(Operation* o)
+  {
+    o->destroy();
+  }
 
-  template <typename Operation> static Operation*& front(op_queue<Operation>& q)
+  template <typename Operation>
+  static Operation*& front(op_queue<Operation>& q)
   {
     return q.front_;
   }
 
-  template <typename Operation> static Operation*& back(op_queue<Operation>& q) { return q.back_; }
+  template <typename Operation>
+  static Operation*& back(op_queue<Operation>& q)
+  {
+    return q.back_;
+  }
 };
 
-template <typename Operation> class op_queue : private noncopyable
+template <typename Operation>
+class op_queue : private noncopyable
 {
  public:
   op_queue() : front_(0), back_(0) {}
@@ -68,7 +78,8 @@ template <typename Operation> class op_queue : private noncopyable
     }
   }
 
-  template <typename OtherOperation> void push(op_queue<OtherOperation>& q)
+  template <typename OtherOperation>
+  void push(op_queue<OtherOperation>& q)
   {
     if (Operation* other_front = op_queue_access::front(q)) {
       if (back_) {
@@ -96,5 +107,4 @@ template <typename Operation> class op_queue : private noncopyable
   Operation* back_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_OP_QUEUE_HPP

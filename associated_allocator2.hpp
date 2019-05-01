@@ -5,9 +5,7 @@
 #include "has_type_member.hpp"
 
 namespace boost::asio {
-
 HAS_TYPE_MEMBER(allocator_type);
-
 template <typename T, typename Alloc = std::allocator<void>>
 auto get_associated_allocator(const T& t, const Alloc& a = Alloc())
 {
@@ -18,6 +16,5 @@ auto get_associated_allocator(const T& t, const Alloc& a = Alloc())
     return a;
   }
 }
-
 }  // namespace boost::asio
 #endif  // BOOST_ASIO_ASSOCIATED_ALLOCATOR2_HPP
