@@ -4,11 +4,14 @@
     <Filter Include="2.0">
       <UniqueIdentifier>{b23ae642-e549-4da9-8df6-c846f4b35dc8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="learn">
-      <UniqueIdentifier>{6f5d3120-bd4c-4928-8811-2c45129b0ab2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="test">
       <UniqueIdentifier>{b8932297-44d4-4e9f-b95d-9733535efed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="detail">
+      <UniqueIdentifier>{6f5d3120-bd4c-4928-8811-2c45129b0ab2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="timer">
+      <UniqueIdentifier>{f36e309d-715a-4333-81fa-4f517162f6fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -22,115 +25,109 @@
       <Filter>2.0</Filter>
     </ClInclude>
     <ClInclude Include="call_stack.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="conditionally_enabled_event.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="conditionally_enabled_mutex.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="error_code.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="event.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="global.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="fenced_block.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="is_executor.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="mutex.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="op_queue.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="noncopyable.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="object_pool.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="has_type_member.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="recycling_allocator.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="scoped_lock.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="thread.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="thread_group.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="thread_info_base.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="signal_blocker.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="select_interrupter.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="throw_exception.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="thread_context.hpp">
-      <Filter>learn</Filter>
-    </ClInclude>
-    <ClInclude Include="async_result.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="associated_allocator.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="associated_executor.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="service_registry_helpers.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="service_registry2.hpp">
       <Filter>2.0</Filter>
     </ClInclude>
     <ClInclude Include="service_registry.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="scheduler_thread_info.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="scheduler_operation.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="reactor_op.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="handler_alloc_helpers.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="system_context.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="execution_context.hpp">
-      <Filter>learn</Filter>
-    </ClInclude>
-    <ClInclude Include="system_executor.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="executor.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="executor_op.hpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClInclude>
     <ClInclude Include="post.hpp" />
     <ClInclude Include="executor_work_guard.hpp" />
@@ -141,6 +138,24 @@
     <ClInclude Include="io_context.hpp" />
     <ClInclude Include="scheduler.hpp" />
     <ClInclude Include="epoll_reactor.hpp" />
+    <ClInclude Include="async_result.hpp" />
+    <ClInclude Include="system_executor.hpp" />
+    <ClInclude Include="wait_op.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_queue_base.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_queue.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="time_traits.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_queue_set.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="config.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_associated_allocator.hpp">
@@ -150,18 +165,17 @@
       <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="system_context.cpp">
-      <Filter>learn</Filter>
+      <Filter>detail</Filter>
     </ClCompile>
     <ClCompile Include="execution_context.cpp">
-      <Filter>learn</Filter>
-    </ClCompile>
-    <ClCompile Include="test_event.hpp">
-      <Filter>test</Filter>
+      <Filter>detail</Filter>
     </ClCompile>
     <ClCompile Include="io_context.cpp" />
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="epoll_reactor.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="main.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

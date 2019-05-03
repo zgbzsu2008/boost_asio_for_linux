@@ -55,16 +55,16 @@ class io_context : public execution_context
   std::size_t run_one();
 
   template <typename Rep, typename Period>
-  std::size_t run_for(const std::chrono::duration<Rep, Period>& rel_t)
+  std::size_t run_for(const std::chrono::duration<Rep, Period>& rel_time)
   {
-    return this->run_until(std::chrono::steady_clock::now() + rel_t);
+    return this->run_until(std::chrono::steady_clock::now() + rel_time);
   }
 
   template <typename Clock, typename Duration>
-  std::size_t run_until(const std::chrono::time_point<Clock, Duration>& abs_t)
+  std::size_t run_until(const std::chrono::time_point<Clock, Duration>& abs_time)
   {
     std::size_t n = 0;
-    while (this->run_one_until(abs_t)) {
+    while (this->run_one_until(abs_time)) {
       if (n != std::numeric_limits<std::size_t>::max()) {
         ++n;
       }
@@ -73,22 +73,22 @@ class io_context : public execution_context
   }
 
   template <typename Rep, typename Period>
-  std::size_t run_one_for(const std::chrono::duration<Rep, Period>& rel_t)
+  std::size_t run_one_for(const std::chrono::duration<Rep, Period>& rel_time)
   {
-    return this->run_one_until(std::chrono::steady_clock::now() + rel_t);
+    return this->run_one_until(std::chrono::steady_clock::now() + rel_time);
   }
 
   template <typename Clock, typename Duration>
-  std::size_t run_one_until(const std::chrono::time_point<Clock, Duration>& abs_t)
+  std::size_t run_one_until(const std::chrono::time_point<Clock, Duration>& abs_time)
   {
     typename Clock::time_point now = Clock::now();
-    while (now < abs_t) {
-      typename Clock::duration rel_t = abs_t - now();
-      if (rel_t > std::chrono::seconds(1)) {
-        rel_t = std::chrono::seconds(1);
+    while (now < abs_time) {
+      typename Clock::duration rel_time = abs_time - now();
+      if (rel_time > std::chrono::seconds(1)) {
+        rel_time = std::chrono::seconds(1);
       }
       std::error_code ec;
-      auto ms = std::chrono::duration_cast<std::chrono::microseconds>(rel_t).count();
+      auto ms = std::chrono::duration_cast<std::chrono::microseconds>(rel_time).count();
       std::size_t n = impl_.wait_one(static_cast<long>(ms), ec);
       detail::throw_exception(ec);
       if (n || impl_.stop()) return n;

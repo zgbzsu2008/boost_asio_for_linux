@@ -2,7 +2,6 @@
 #define BOOST_ASIO_DETAIL_SCHEDULER_OPERATION_HPP
 
 #include <system_error>
-
 #include "op_queue.hpp"
 
 namespace boost::asio::detail {

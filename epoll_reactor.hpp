@@ -2,12 +2,17 @@
 #define BOOST_ASIO_DETAIL_EPOLL_REACTOR_HPP
 
 #include "conditionally_enabled_mutex.hpp"
+#include "config.hpp"
 #include "execution_context.hpp"
 #include "object_pool.hpp"
 #include "op_queue.hpp"
 #include "reactor_op.hpp"
+#include "scheduler.hpp"
 #include "scheduler_operation.hpp"
 #include "select_interrupter.hpp"
+#include "timer_queue_base.hpp"
+#include "timer_queue_set.hpp"
+#include "wait_op.hpp"
 
 namespace boost::asio::detail {
 class epoll_reactor : public execution_context_service_base<epoll_reactor>
@@ -83,9 +88,70 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
   void interrupt();
 
+  template <typename T>
+  void add_timer_queue(timer_queue<T>& timer_queue)
+  {
+    do_add_timer_queue(timer_queue);
+  }
+
+  template <typename T>
+  void remove_timer_queue(timer_queue<T>& timer_queue)
+  {
+    do_remove_timer_queue(timer_queue);
+  }
+
+  template <typename T>
+  void schedule_timer(timer_queue<T>& queue, const typename T::time_type& time,
+                      typename timer_queue<T>::ptr_timer_data& timer, wait_op* op)
+  {
+    mutex::scoped_lock lock(mutex_);
+    if (shutdown_) {
+      scheduler_.post_immediate_completion(op, false);
+      return;
+    }
+
+    bool earliest = queue.enqueue_timer(time, timer, op);
+    scheduler_.work_started();
+    if (earliest) {
+      update_timeout();
+    }
+  }
+
+  template <typename T>
+  std::size_t cancel_timer(timer_queue<T>& queue, typename timer_queue<T>::per_timer_data& timer,
+                           std::size_t max_cancelled = (std::numeric_limits<std::size_t>::max)())
+  {
+    mutex::scoped_lock lock(mutex_);
+    op_queue<operation> ops;
+    std::size_t n = queue.cancel_timer(timer, ops, max_cancelled);
+    lock.unlock();
+    scheduler_.post_deferred_completions(ops);
+    return n;
+  }
+
+  template <typename T>
+  void move_timer(timer_queue<T>& queue, typename timer_queue<T>::per_timer_data& target,
+                  typename timer_queue<T>::per_timer_data& source)
+  {
+    mutex::scoped_lock lock(mutex_);
+    op_queue<operation> ops;
+    queue.cancle_timer(target, ops);
+    queue.move_timer(target, source);
+    lock.unlock();
+  }
+
  private:
   static int do_epoll_create();
   static int do_timerfd_create();
+  void do_add_timer_queue(timer_queue_base& queue);
+  void do_remove_timer_queue(timer_queue_base& queue);
+
+  void update_timeout();
+  int get_timeout(int msec);
+
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+  int get_timeout(itimerspec& ts);
+#endif  // !BOOST_ASIO_HAS_TIMERFD
 
   ptr_descriptor_data allocate_descriptor_state();
   void free_descriptor_state(descriptor_state* s);
@@ -95,6 +161,8 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
   int epoll_fd_;
   int timer_fd_;
+  timer_queue_set timer_queues;
+
   bool shutdown_;
   mutable mutex mutex_;
   mutable mutex registered_descriptors_mutex_;

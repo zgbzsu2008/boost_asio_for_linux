@@ -3,12 +3,11 @@
 #include <unistd.h>
 #include <cstddef>
 #include <iostream>
-
 #include "epoll_reactor.hpp"
 #include "error_code.hpp"
 #include "execution_context.hpp"
-#include "scheduler.hpp"
 #include "service_registry_helpers.hpp"
+#include "throw_exception.hpp"
 
 namespace boost::asio::detail {
 epoll_reactor::epoll_reactor(execution_context& ctx)
@@ -27,10 +26,12 @@ epoll_reactor::epoll_reactor(execution_context& ctx)
   ::epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, interrupter_.fd(), &ev);
   interrupter_.interrupt();
 
+#if defined(BOOST_ASIO_HAS_TIMERFD)
   ev = {0, {0}};
   ev.events = EPOLLIN | EPOLLERR;
   ev.data.ptr = &timer_fd_;
   ::epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, timer_fd_, &ev);
+#endif // !BOOST_ASIO_HAS_TIMERFD
 }
 
 epoll_reactor::~epoll_reactor()
@@ -230,20 +231,67 @@ int epoll_reactor::do_epoll_create()
   int fd = ::epoll_create1(EPOLL_CLOEXEC);
   if (fd < 0) {
     std::error_code ec(errno, std::generic_category());
-    throw ec;
+    detail::throw_exception(ec);
   }
   return fd;
 }
 
 int epoll_reactor::do_timerfd_create()
 {
-  int fd = ::timerfd_create(CLOCK_MONOTONIC, TFD_CLOEXEC);
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+  int fd = ::timerfd_create(CLOCK_MONOTONIC, TFD_NONBLOCK | TFD_CLOEXEC);
   if (fd < 0) {
     std::error_code ec(errno, std::generic_category());
-    throw ec;
+    detail::throw_exception(ec);
   }
   return fd;
+#else
+  return -1;
+#endif // !BOOST_ASIO_HAS_TIMERFD
 }
+
+void epoll_reactor::do_add_timer_queue(timer_queue_base& queue)
+{
+  mutex::scoped_lock lock(mutex_);
+  timer_queues.insert(&queue);
+}
+
+void epoll_reactor::do_remove_timer_queue(timer_queue_base& queue)
+{
+  mutex::scoped_lock lock(mutex_);
+  timer_queues.erase(&queue);
+}
+
+void epoll_reactor::update_timeout()
+{
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+  if (timer_fd_ != -1) {
+    itimerspec new_timeout;
+    itimerspec old_timeout;
+    int flags = get_timeout(new_timeout);
+    timerfd_settime(timer_fd_, flags, &new_timeout, &old_timeout);
+    return;
+  }
+#endif  // !BOOST_ASIO_HAS_TIMERFD
+  this->interrupt();
+}
+
+int epoll_reactor::get_timeout(int msec)
+{
+  const int max_msec = 5 * 60 * 1000;
+  return (int)timer_queues.wait_duration_msec((msec < 0 || max_msec < msec) ? max_msec : msec);
+}
+
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+int epoll_reactor::get_timeout(itimerspec& ts)
+{
+  ts.it_interval = {0, 0};
+  long usec = timer_queues.wait_duration_usec(5 * 60 * 1000 * 1000);
+  ts.it_value.tv_sec = usec / 1000000;
+  ts.it_value.tv_nsec = usec ? (usec % 1000000) * 1000 : 1;
+  return usec ? 0 : TFD_TIMER_ABSTIME;
+}
+#endif  // !BOOST_ASIO_HAS_TIMERFD
 
 epoll_reactor::ptr_descriptor_data epoll_reactor::allocate_descriptor_state()
 {
@@ -263,21 +311,41 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
   if (usec == 0) {
     timeout = 0;
   } else {
-    timeout = static_cast<int>((usec < 0) ? -1 : ((usec - 1) / 1000 + 1));
+    timeout = int((usec < 0) ? -1 : ((usec - 1) / 1000 + 1));
+    if (timer_fd_ == -1) {
+      mutex::scoped_lock lock(mutex_);
+      timeout = get_timeout(timeout);
+    }
   }
 
   epoll_event events[128];
-  bool check_timers = false;
   int num_events = ::epoll_wait(epoll_fd_, events, 128, timeout);
+
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+  bool check_timers = (timer_fd_ == -1);
+#else
+  bool check_timers = true;
+#endif  // !BOOST_ASIO_HAS_TIMERFD
+
   for (int i = 0; i < num_events; i++) {
     void* ptr = events[i].data.ptr;
     if (ptr == &interrupter_) {
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+      if (timer_fd_ == -1) {
+        check_timers = true;
+      }
+#else
       check_timers = true;
-    } else if (ptr == &timer_fd_) {
+#endif  // !BOOST_ASIO_HAS_TIMERFD
+    }
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+    else if (ptr == &timer_fd_) {
       check_timers = true;
-    } else {
+    }
+#endif  // !BOOST_ASIO_HAS_TIMERFD
+    else {
       auto descriptor_data = static_cast<descriptor_state*>(ptr);
-      if (!ops.is_enqueued(descriptor_data)) {  // 是否在队列中 比如read->write
+      if (!ops.is_enqueued(descriptor_data)) {
         descriptor_data->set_ready_events(events[i].events);
         ops.push(descriptor_data);
       } else {
@@ -285,10 +353,20 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
       }
     }
   }
-
-  std::cout << "\tepoll_reactor::run(): " << num_events << " events happend\n";
+  std::cout << "epoll_reactor::run(): [" << num_events << "] events happend\n";
 
   if (check_timers) {
+    mutex::scoped_lock lock(mutex_);
+    timer_queues.get_ready_timers(ops);
+
+#if defined(BOOST_ASIO_HAS_TIMERFD)
+    if (timer_fd_ != -1) {
+      itimerspec new_timeout;
+      itimerspec old_timeout;
+      int flags = get_timeout(new_timeout);
+      timerfd_settime(timer_fd_, flags, &new_timeout, &old_timeout);
+    }
+#endif  // !BOOST_ASIO_HAS_TIMERFD
   }
 }
 
@@ -316,9 +394,9 @@ struct epoll_reactor::perform_io_cleanup_on_block_exit
     if (first_op_) {
       if (!ops_.empty()) {
         reactor_->scheduler_.post_deferred_completions(ops_);
-      } else {
-        reactor_->scheduler_.compensating_work_started();
       }
+    } else {
+      reactor_->scheduler_.compensating_work_started();
     }
   }
 
@@ -336,8 +414,7 @@ operation* epoll_reactor::descriptor_state::perform_io(uint32_t events)
   for (int j = max_ops - 1; j >= 0; --j) {
     if (events & (flag[j] | EPOLLERR | EPOLLHUP)) {
       try_speculative_[j] = true;
-      while (!op_queue_[j].empty()) {
-        reactor_op* op = op_queue_[j].front();
+      while (reactor_op* op = op_queue_[j].front()) {
         if (auto status = op->perform()) {
           op_queue_[j].pop();
           io_cleanup.ops_.push(op);
@@ -352,10 +429,8 @@ operation* epoll_reactor::descriptor_state::perform_io(uint32_t events)
     }
   }
 
-  if (!io_cleanup.ops_.empty()) {
-    io_cleanup.first_op_ = io_cleanup.ops_.front();
-    io_cleanup.ops_.pop();
-  }
+  io_cleanup.first_op_ = io_cleanup.ops_.front();
+  io_cleanup.ops_.pop();
   return io_cleanup.first_op_;
 }
 }  // namespace boost::asio::detail

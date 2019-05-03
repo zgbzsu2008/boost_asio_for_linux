@@ -1,5 +1,5 @@
-#ifndef BOOST_ASIO_ASSOCIATED_ALLOCATOR2_HPP
-#define BOOST_ASIO_ASSOCIATED_ALLOCATOR2_HPP
+#ifndef BOOST_ASIO_ASSOCIATED_ALLOCATOR_HPP
+#define BOOST_ASIO_ASSOCIATED_ALLOCATOR_HPP
 
 #include <memory>
 #include "has_type_member.hpp"
@@ -17,4 +17,4 @@ auto get_associated_allocator(const T& t, const Alloc& a = Alloc())
   }
 }
 }  // namespace boost::asio
-#endif  // BOOST_ASIO_ASSOCIATED_ALLOCATOR2_HPP
+#endif  // BOOST_ASIO_ASSOCIATED_ALLOCATOR_HPP

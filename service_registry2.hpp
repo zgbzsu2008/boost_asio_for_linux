@@ -1,5 +1,5 @@
-#ifndef BOOST_ASIO_DETAIL_SERVICE_REGISTRY2_HPP
-#define BOOST_ASIO_DETAIL_SERVICE_REGISTRY2_HPP
+#ifndef BOOST_ASIO_DETAIL_SERVICE_REGISTRY_HPP
+#define BOOST_ASIO_DETAIL_SERVICE_REGISTRY_HPP
 
 #include <functional>
 #include <type_traits>
@@ -92,10 +92,10 @@ class service_registry : private noncopyable
         key.type_info_ = &typeid(typeid_wrapper<Service>);
         key.id_ = 0;
       } else {
-        static_assert(false, "service registery::init_key service id not executor_context::id or service_id<service>");
+        static_assert(false, "service_registery::init_key() failed!!!");
       }
     } else {
-      static_assert(false, "service registery::init_key service has not type id");
+      static_assert(false, "service_registery::init_key() failed!!!");
     }
   }
 

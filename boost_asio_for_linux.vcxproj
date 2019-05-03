@@ -83,6 +83,7 @@
     <ClInclude Include="call_stack.hpp" />
     <ClInclude Include="conditionally_enabled_event.hpp" />
     <ClInclude Include="conditionally_enabled_mutex.hpp" />
+    <ClInclude Include="config.hpp" />
     <ClInclude Include="epoll_reactor.hpp" />
     <ClInclude Include="error_code.hpp" />
     <ClInclude Include="event.hpp" />
@@ -121,6 +122,11 @@
     <ClInclude Include="thread_group.hpp" />
     <ClInclude Include="thread_info_base.hpp" />
     <ClInclude Include="throw_exception.hpp" />
+    <ClInclude Include="timer_queue.hpp" />
+    <ClInclude Include="timer_queue_base.hpp" />
+    <ClInclude Include="timer_queue_set.hpp" />
+    <ClInclude Include="time_traits.hpp" />
+    <ClInclude Include="wait_op.hpp" />
     <ClInclude Include="work_dispatcher.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -132,7 +138,6 @@
     <ClCompile Include="system_context.cpp" />
     <ClCompile Include="test_associated_allocator.hpp" />
     <ClCompile Include="test_associated_executor.hpp" />
-    <ClCompile Include="test_event.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".clang-format" />

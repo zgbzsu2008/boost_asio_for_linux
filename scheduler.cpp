@@ -159,7 +159,7 @@ std::size_t scheduler::poll(std::error_code &ec)
   thread_call_stack::context ctx(this, this_thread);
 
   mutex::scoped_lock lock(mutex_);
-  if (one_thread_) {  // 如果存在嵌套调用 thread_call_stack中取出任务
+  if (one_thread_) {  // 单线程嵌套poll thread_call_stack中取出任务
     if (auto outer_info = static_cast<thread_info *>(ctx.next_by_key())) {
       op_queue_.push(outer_info->private_op_queue);
     }
@@ -284,7 +284,7 @@ std::size_t scheduler::do_run_one(mutex::scoped_lock &lock, thread_info &this_th
 {
   while (!stopped_) {
     if (!op_queue_.empty()) {
-      std::cout << "scheduler::do_run_one(): working in this thread =" << std::this_thread::get_id() << '\n';
+      std::cout << "scheduler::do_run_one(): working... pid= " << std::this_thread::get_id() << '\n';
       operation *o = op_queue_.front();
       op_queue_.pop();
       bool more_handlers = (!op_queue_.empty());
@@ -313,7 +313,7 @@ std::size_t scheduler::do_run_one(mutex::scoped_lock &lock, thread_info &this_th
         return 1;
       }
     } else {
-      std::cout << "scheduler::do_run_one(): waiting in this thread =" << std::this_thread::get_id() << '\n';
+      std::cout << "scheduler::do_run_one(): waiting pid= " << std::this_thread::get_id() << '\n';
       wakeup_event_.clear(lock);
       wakeup_event_.wait(lock);
     }

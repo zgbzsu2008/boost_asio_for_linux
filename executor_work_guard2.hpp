@@ -1,5 +1,5 @@
-#ifndef BOOST_ASIO_EXECUTOR_WORK_GUARD2_HPP
-#define BOOST_ASIO_EXECUTOR_WORK_GUARD2_HPP
+#ifndef BOOST_ASIO_EXECUTOR_WORK_GUARD_HPP
+#define BOOST_ASIO_EXECUTOR_WORK_GUARD_HPP
 
 #include "associated_executor2.hpp"
 
@@ -63,4 +63,4 @@ inline auto make_work_guard(const T& t)
   }
 }
 }  // namespace boost::asio
-#endif  // BOOST_ASIO_EXECUTOR_WORK_GUARD2_HPP
+#endif  // BOOST_ASIO_EXECUTOR_WORK_GUARD_HPP

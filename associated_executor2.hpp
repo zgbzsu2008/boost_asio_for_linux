@@ -1,5 +1,5 @@
-#ifndef BOOST_ASIO_ASSOCIATED_EXECUTOR2_HPP
-#define BOOST_ASIO_ASSOCIATED_EXECUTOR2_HPP
+#ifndef BOOST_ASIO_ASSOCIATED_EXECUTOR_HPP
+#define BOOST_ASIO_ASSOCIATED_EXECUTOR_HPP
 
 #include "executor.hpp"
 #include "has_type_member.hpp"
