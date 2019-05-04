@@ -155,7 +155,33 @@
     <ClInclude Include="timer_queue_set.hpp">
       <Filter>timer</Filter>
     </ClInclude>
-    <ClInclude Include="config.hpp" />
+    <ClInclude Include="config.hpp">
+      <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="steady_timer.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_waitable_timer.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="deadline_timer_service.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="basic_io_object.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="wait_traits.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="waitable_timer_service.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="chrono_time_traits.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="detail_deadline_timer_service.h">
+      <Filter>timer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="test_associated_allocator.hpp">

@@ -5,28 +5,30 @@
 
 namespace boost::asio {
 
-template <typename T = std::chrono::system_clock::time_point>
-struct time_traits
+template <typename T = std::chrono::system_clock>
+struct time_traits;
+
+template <>
+struct time_traits<std::chrono::system_clock>
 {
-  using time_type = std::chrono::system_clock::time_point;
-  using duration_type = std::chrono::microseconds;
-  static time_type now() { return std::chrono::system_clock::now(); }
+  using clock_type = std::chrono::system_clock;
+  using time_point = clock_type::time_point;
+  using duration = clock_type::duration;
 
-  static time_type add(const time_type& t, const duration_type& d) { return t + d; }
+  static time_point now() { return std::chrono::system_clock::now(); }
 
-  static duration_type subtract(const time_type& t1, const time_type& t2)
+  static time_point add(const time_point& t, const duration& d) { return t + d; }
+
+  static duration subtract(const time_point& t1, const time_point& t2) { return t1 - t2; }
+
+  static bool less_than(const time_point& t1, const time_point& t2) { return t1 < t2; }
+
+  template <typename Rep, typename Period>
+  static std::chrono::duration<Rep, Period> to_chrono_duration(const duration& d)
   {
-    return std::chrono::duration_cast<duration_type>(t1 - t2);
+    return d;
   }
-
-  static bool less_than(const time_type& t1, const time_type& t2) { return t1 < t2; }
-
-  static std::chrono::milliseconds to_msec_duration(const duration_type& d)
-  {
-    return std::chrono::duration_cast<std::chrono::milliseconds>(d);
-  }
-
-  static std::chrono::microseconds to_usec_duration(const duration_type& d) { return d; }
+  // static posix_time_duration to_posix_duration(const duration& d) { return d; }
 };
 }  // namespace boost::asio
 #endif  // !BOOST_ASIO_TIME_TRAITS_HPP

@@ -74,16 +74,24 @@
   <ImportGroup Label="Shared" />
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemGroup>
     <ClInclude Include="associated_allocator.hpp" />
     <ClInclude Include="associated_allocator2.hpp" />
     <ClInclude Include="associated_executor.hpp" />
     <ClInclude Include="associated_executor2.hpp" />
     <ClInclude Include="async_result.hpp" />
+    <ClInclude Include="basic_io_object.hpp" />
+    <ClInclude Include="basic_waitable_timer.hpp" />
     <ClInclude Include="call_stack.hpp" />
+    <ClInclude Include="chrono_time_traits.hpp" />
     <ClInclude Include="conditionally_enabled_event.hpp" />
     <ClInclude Include="conditionally_enabled_mutex.hpp" />
     <ClInclude Include="config.hpp" />
+    <ClInclude Include="deadline_timer_service.hpp" />
+    <ClInclude Include="detail_deadline_timer_service.h" />
     <ClInclude Include="epoll_reactor.hpp" />
     <ClInclude Include="error_code.hpp" />
     <ClInclude Include="event.hpp" />
@@ -115,6 +123,7 @@
     <ClInclude Include="service_registry2.hpp" />
     <ClInclude Include="service_registry_helpers.hpp" />
     <ClInclude Include="signal_blocker.hpp" />
+    <ClInclude Include="steady_timer.hpp" />
     <ClInclude Include="system_context.hpp" />
     <ClInclude Include="system_executor.hpp" />
     <ClInclude Include="thread.hpp" />
@@ -126,7 +135,9 @@
     <ClInclude Include="timer_queue_base.hpp" />
     <ClInclude Include="timer_queue_set.hpp" />
     <ClInclude Include="time_traits.hpp" />
+    <ClInclude Include="waitable_timer_service.hpp" />
     <ClInclude Include="wait_op.hpp" />
+    <ClInclude Include="wait_traits.hpp" />
     <ClInclude Include="work_dispatcher.hpp" />
   </ItemGroup>
   <ItemGroup>

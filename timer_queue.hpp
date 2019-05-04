@@ -12,8 +12,8 @@ template <typename T>
 class timer_queue : public timer_queue_base
 {
  public:
-  using time_type = typename T::time_type;
-  using duration_type = typename T::duration_type;
+  using time_point = typename T::time_point;
+  using duration = typename T::duration;
 
   class ptr_timer_data
   {
@@ -31,7 +31,7 @@ class timer_queue : public timer_queue_base
 
   timer_queue() : timers_(), heap_() {}
 
-  bool enqueue_timer(const time_type time, ptr_timer_data& timer, wait_op* op)
+  bool enqueue_timer(const time_point time, ptr_timer_data& timer, wait_op* op)
   {
     if ((timer.prev_ == 0) && (&timer != timers_)) {
       if (this->is_positive_infinity(time)) {
@@ -62,21 +62,21 @@ class timer_queue : public timer_queue_base
     if (heap_.empty()) {
       return max_duration;
     }
-    return this->to_msec(T::to_msec_duration(T::subtract(heap_[0].time_, T::now())), max_duration)
+    return this->to_msec(T::to_posix_duration(T::subtract(heap_[0].time_, T::now())), max_duration)
   }
 
-  virtual long wait_duration_msec(long max_duration) const
+  virtual long wait_duration_usec(long max_duration) const
   {
     if (heap_.empty()) {
       return max_duration;
     }
-    return this->to_usec(T::to_usec_duration(T::subtract(heap_[0].time_, T::now())), max_duration)
+    return this->to_usec(T::to_posix_duration(T::subtract(heap_[0].time_, T::now())), max_duration)
   }
 
   virtual void get_ready_timers(op_queue<operation>& ops)
   {
     if (!heap_.empty()) {
-      const time_type now = T::now();
+      const time_point now = T::now();
       while (!heap_.empty() && !T::less_than(now, heap_[0].time_)) {
         ptr_timer_data* timer = heap_[0].timer_;
         ops.push(timer->op_queue_);
@@ -175,7 +175,7 @@ class timer_queue : public timer_queue_base
     heap_[index2].timer_->heap_index_ = index2;
   }
 
-  static bool is_positive_infinity(const time_type& time) { return time == time_type::max(); }
+  static bool is_positive_infinity(const time_point& time) { return time == time_point::max(); }
 
   template <typename Duration>
   long to_sec(const Duration& d, long max_duration) const
@@ -227,7 +227,7 @@ class timer_queue : public timer_queue_base
 
   struct heap_entry
   {
-    time_type time_;
+    time_point time_;
     ptr_timer_data* timer_;
   };
 

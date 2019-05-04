@@ -101,7 +101,7 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
   }
 
   template <typename T>
-  void schedule_timer(timer_queue<T>& queue, const typename T::time_type& time,
+  void schedule_timer(timer_queue<T>& queue, const typename T::time_point& time,
                       typename timer_queue<T>::ptr_timer_data& timer, wait_op* op)
   {
     mutex::scoped_lock lock(mutex_);

@@ -15,7 +15,7 @@ class timer_queue_base : private noncopyable
   virtual bool empty() const = 0;
   virtual long wait_duration_msec(long max_duration) const = 0;
   virtual long wait_duration_usec(long max_duration) const = 0;
-  virtual long get_ready_timers(op_queue<operation>& ops) = 0;
+  virtual void get_ready_timers(op_queue<operation>& ops) = 0;
   virtual void get_all_timers(op_queue<operation>& ops) = 0;
 
  private:
