@@ -4,9 +4,11 @@
 #include "epoll_reactor.hpp"
 #include "io_context.hpp"
 #include "service_registry_helpers.hpp"
-#include "time_traits.hpp"
+#include "chrono_time_traits.hpp"
 #include "timer_queue.hpp"
 #include "wait_traits.hpp"
+
+
 
 namespace boost::asio::detail {
 template <typename T>
@@ -17,11 +19,11 @@ class deadline_timer_service : public service_base<deadline_timer_service<T>>
   using duration = typename T::duration;
   using timer_scheduler = epoll_reactor;
 
-  struct implementation_type : private noncopyable
+  struct impl_type : private noncopyable
   {
     time_point expiry;
     bool might_have_pending_waits;
-    typename timer_queue<T>::ptr_timer_data timer_data;
+    typename timer_queue<T>::per_timer_data timer_data;
   };
 
   deadline_timer_service(io_context& ioc)
@@ -35,19 +37,19 @@ class deadline_timer_service : public service_base<deadline_timer_service<T>>
 
   void shutdown() {}
 
-  void construct(implementation_type& impl)
+  void construct(impl_type& impl)
   {
     impl.expiry = time_point();
     impl.might_have_pending_waits = false;
   }
 
-  void destroy(implementation_type& impl)
+  void destroy(impl_type& impl)
   {
     std::error_code ec;
     this->cancle(impl, ec);
   }
 
-  std::size_t cancle(implementation_type& impl, std::error_code& ec)
+  std::size_t cancle(impl_type& impl, std::error_code& ec)
   {
     if (!impl.might_have_pending_waits) {
       ec = std::error_code();
@@ -59,7 +61,21 @@ class deadline_timer_service : public service_base<deadline_timer_service<T>>
     return count;
   }
 
-  void move_construct(implementation_type& impl, implementation_type& other_impl)
+  std::size_t cancle_one(impl_type& impl, std::error_code& ec)
+  {
+    if (!impl.might_have_pending_waits) {
+      ec = std::error_code();
+      return 0;
+    }
+    std::size_t count = scheduler_.cancel_timer(timer_queue_, impl.timer_data, 1);
+    if (count == 0) {
+      impl.might_have_pending_waits = false;
+    }
+    ec = std::error_code();
+    return count;
+  }
+
+  void move_construct(impl_type& impl, impl_type& other_impl)
   {
     scheduler_.move_timer(timer_queue_, impl.timer_data, other_impl.timer_data);
     impl.expiry = other_impl.expiry;
@@ -68,16 +84,16 @@ class deadline_timer_service : public service_base<deadline_timer_service<T>>
     other_impl.might_have_pending_waits = false;
   }
 
-  time_point expiry(const implementation_type& impl) const { return impl.expiry; }
+  time_point expiry(const impl_type& impl) const { return impl.expiry; }
 
-  time_point expires_at(const implementation_type& impl) const { return impl.expiry; }
+  time_point expires_at(const impl_type& impl) const { return impl.expiry; }
 
-  duration expires_from_now(const implementation_type& impl) const
+  duration expires_from_now(const impl_type& impl) const
   {
     return T::subtract(this->expiry(impl), T::now());
   }
 
-  std::size_t expiry_at(implementation_type& impl, const time_point& expiry_time, std::error_code& ec)
+  std::size_t expires_at(impl_type& impl, const time_point& expiry_time, std::error_code& ec)
   {
     std::size_t count = this->cancle(impl, ec);
     impl.expiry = expiry_time;
@@ -85,31 +101,34 @@ class deadline_timer_service : public service_base<deadline_timer_service<T>>
     return count;
   }
 
-  std::size_t expires_after(implementation_type& impl, const duration& expiry_time, std::error_code& ec)
+  std::size_t expires_after(impl_type& impl, const duration& expiry_time, std::error_code& ec)
   {
-    return this->expiry_at(impl, T::add(T::now(), expiry_time), ec);
+    return this->expires_at(impl, T::add(T::now(), expiry_time), ec);
   }
 
-  std::size_t expires_from_now(implementation_type& impl, const duration& expiry_time, std::error_code& ec)
+  std::size_t expires_from_now(impl_type& impl, const duration& expiry_time, std::error_code& ec)
   {
-    return this->expiry_at(impl, T::add(T::now(), expiry_time), ec);
+    return this->expires_at(impl, T::add(T::now(), expiry_time), ec);
   }
 
-  void wait(implementation_type& impl, std::error_code& ec)
+  void wait(impl_type& impl, std::error_code& ec)
   {
     time_point now = T::now();
     ec=std::error_code();
     while (T::less_than(now, impl.expiry) && !ec) {
-
+      this->do_wait(T::to_chrono_duration(T::subtract(impl.expiry, now)), ec);
+      now = T::now();
     }
   }
 
+  template <typename Handler>
+  void async_wait(impl_type& impl, Handler& handler)
+  {}
+
  private:
-  template <typename Duration>
-  void do_wait(const Duration& timeout, std::error_code& ec)
+  void do_wait(const duration& timeout, std::error_code& ec)
   {
-    std::this_thread::sleep_for(std::chrono::seconds(timeout.total_seconds()) +
-                                std::chrono::microseconds(timeout.total_microseconds()));
+    std::this_thread::sleep_for(T::to_chrono_duration(timeout));
     ec = std::error_code();
   }
 

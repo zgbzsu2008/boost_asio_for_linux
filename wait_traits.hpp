@@ -2,21 +2,28 @@
 #define BOOST_ASIO_WAIT_TRAITS_HPP
 
 namespace boost::asio {
+
 template <typename Clock>
 struct wait_traits
 {
-  static typename Clock::duration to_wait_duration(const typename Clock::duration& d) { return d; }
+  using clock_type = Clock;
+  using duration = typename clock_type::duration;
+  using time_point = typename clock_type::time_point;
 
-  static typename Clock::duration to_wait_duration(const typename Clock::time_point& t) {
-    typename Clock::time_point now = Clock::now();
-    if (now + (Clock::duration::max()) < t) {
-      return Clock::duration::max();
+  static duration to_wait_duration(const duration& d) { return d; }
+
+  static duration to_wait_duration(const time_point& t)
+  {
+    time_point now = clock_type::now();
+    if (now + (duration::max()) < t) {
+      return duration::max();
     }
-    if (now + (Clock::duration::min()) > t) {
-      return Clock::duration::min();
+    if (now + duration::min() > t) {
+      return duration::min();
     }
     return t - now;
   }
 };
+
 }  // namespace boost::asio
 #endif  // !BOOST_ASIO_WAIT_TRAITS_HPP

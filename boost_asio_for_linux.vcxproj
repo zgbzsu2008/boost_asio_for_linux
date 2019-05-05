@@ -126,6 +126,7 @@
     <ClInclude Include="steady_timer.hpp" />
     <ClInclude Include="system_context.hpp" />
     <ClInclude Include="system_executor.hpp" />
+    <ClInclude Include="system_timer.hpp" />
     <ClInclude Include="thread.hpp" />
     <ClInclude Include="thread_context.hpp" />
     <ClInclude Include="thread_group.hpp" />

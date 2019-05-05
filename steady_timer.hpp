@@ -5,7 +5,7 @@
 #include "basic_waitable_timer.hpp"
 
 namespace boost::asio {
-typedef basic_waitable_timer<std::chrono::steady_clock> steady_timer;
+using steady_timer = basic_waitable_timer<std::chrono::steady_clock>;
 }
 
 #endif  // !BOOST_ASIO_STEADY_TIMER_HPP

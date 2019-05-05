@@ -51,7 +51,8 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
     void add_ready_events(uint32_t events) { task_result_ |= events; }
     operation* perform_io(uint32_t events);
 
-    static void do_complete(void* owner, operation* base, const std::error_code& ec, std::size_t bytes_transferred);
+    static void do_complete(void* owner, operation* base, const std::error_code& ec,
+                            std::size_t bytes_transferred);
   };
   using ptr_descriptor_data = descriptor_state*;
   using socket_type = int;
@@ -65,8 +66,8 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
   int register_descriptor(socket_type descriptor, ptr_descriptor_data& descriptor_data);
 
-  int register_internal_descriptor(int op_type, socket_type descriptor, ptr_descriptor_data& descriptor_data,
-                                   reactor_op* op);
+  int register_internal_descriptor(int op_type, socket_type descriptor,
+                                   ptr_descriptor_data& descriptor_data, reactor_op* op);
 
   void move_descriptor(socket_type descriptor, ptr_descriptor_data& target_descriptor_data,
                        ptr_descriptor_data& source_descriptor_data);
@@ -102,7 +103,7 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
   template <typename T>
   void schedule_timer(timer_queue<T>& queue, const typename T::time_point& time,
-                      typename timer_queue<T>::ptr_timer_data& timer, wait_op* op)
+                      typename timer_queue<T>::per_timer_data& timer, wait_op* op)
   {
     mutex::scoped_lock lock(mutex_);
     if (shutdown_) {

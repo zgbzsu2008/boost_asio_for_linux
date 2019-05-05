@@ -176,10 +176,13 @@
     <ClInclude Include="waitable_timer_service.hpp">
       <Filter>timer</Filter>
     </ClInclude>
-    <ClInclude Include="chrono_time_traits.hpp">
+    <ClInclude Include="detail_deadline_timer_service.h">
       <Filter>timer</Filter>
     </ClInclude>
-    <ClInclude Include="detail_deadline_timer_service.h">
+    <ClInclude Include="system_timer.hpp">
+      <Filter>timer</Filter>
+    </ClInclude>
+    <ClInclude Include="chrono_time_traits.hpp">
       <Filter>timer</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,23 +15,23 @@ class timer_queue : public timer_queue_base
   using time_point = typename T::time_point;
   using duration = typename T::duration;
 
-  class ptr_timer_data
+  class per_timer_data
   {
    public:
-    ptr_timer_data() : heap_index_(std::numeric_limits<std::size_t>::max()), next_(0), prev_(0) {}
+    per_timer_data() : heap_index_(std::numeric_limits<std::size_t>::max()), next_(0), prev_(0) {}
 
    private:
     friend class timer_queue;
 
     op_queue<wait_op> op_queue_;
     std::size_t heap_index_;
-    ptr_timer_data* next_;
-    ptr_timer_data* prev_;
+    per_timer_data* next_;
+    per_timer_data* prev_;
   };
 
   timer_queue() : timers_(), heap_() {}
 
-  bool enqueue_timer(const time_point time, ptr_timer_data& timer, wait_op* op)
+  bool enqueue_timer(const time_point time, per_timer_data& timer, wait_op* op)
   {
     if ((timer.prev_ == 0) && (&timer != timers_)) {
       if (this->is_positive_infinity(time)) {
@@ -78,7 +78,7 @@ class timer_queue : public timer_queue_base
     if (!heap_.empty()) {
       const time_point now = T::now();
       while (!heap_.empty() && !T::less_than(now, heap_[0].time_)) {
-        ptr_timer_data* timer = heap_[0].timer_;
+        per_timer_data* timer = heap_[0].timer_;
         ops.push(timer->op_queue_);
         remove_timer(*timer);
       }
@@ -88,7 +88,7 @@ class timer_queue : public timer_queue_base
   virtual void get_all_timers(op_queue<operation>& ops)
   {
     while (timers_) {
-      ptr_timer_data* timer = timers_;
+      per_timer_data* timer = timers_;
       timers_ = timers_->next_;
       ops.push(timer->op_queue_);
       timer->next_ = 0;
@@ -97,7 +97,7 @@ class timer_queue : public timer_queue_base
     heap_.clear();
   }
 
-  std::size_t cancle_timer(ptr_timer_data& timer, op_queue<operation>& ops,
+  std::size_t cancle_timer(per_timer_data& timer, op_queue<operation>& ops,
                            std::size_t max_cancelled = std::numeric_limits<std::size_t>::max())
   {
     std::size_t num_cancelled = 0;
@@ -115,7 +115,7 @@ class timer_queue : public timer_queue_base
     return num_cancelled;
   }
 
-  void move_timer(ptr_timer_data target, ptr_timer_data& source)
+  void move_timer(per_timer_data target, per_timer_data& source)
   {
     target.op_queue_.push(source.op_queue_);
     target.heap_index_ = source.heap_index_;
@@ -193,7 +193,7 @@ class timer_queue : public timer_queue_base
     return static_cast<long>(sec);
   }
 
-  void remove_timer(ptr_timer_data& timer)
+  void remove_timer(per_timer_data& timer)
   {
     std::size_t index = timer.heap_index_;
     if (!heap_.empty() && index < heap_.size()) {
@@ -205,7 +205,7 @@ class timer_queue : public timer_queue_base
         timer.heap_index_ = std::numeric_limits<std::size_t>::max();
         heap_.pop_back();
         if (index > 0 && T::less_than(heap_[index].time_, heap_[(index - 1) / 2].time_)) {
-          up_heap(index);
+          up_head(index);
         } else {
           down_heap(index);
         }
@@ -228,13 +228,12 @@ class timer_queue : public timer_queue_base
   struct heap_entry
   {
     time_point time_;
-    ptr_timer_data* timer_;
+    per_timer_data* timer_;
   };
 
   std::vector<heap_entry> heap_;
 
-  ptr_timer_data* timers_;
+  per_timer_data* timers_;
 };
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_TIMER_QUEUE_HPP

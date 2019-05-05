@@ -2,5 +2,5 @@
 
 BasedOnStyle: Google
 PointerAlignment: Right
-ColumnLimit: 108
+ColumnLimit: 120
 BreakBeforeBraces: Mozilla

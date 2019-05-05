@@ -22,7 +22,7 @@ class timer_queue_set
         q->next_ = 0;
         return;
       }
-      for (timer_queue_base* p = first_; p->next_; p = p->next_) {
+      for (auto p = first_; p->next_; p = p->next_) {
         if (p->next_ == q) {
           p->next_ = q->next_;
           q->next_ = 0;
@@ -34,7 +34,7 @@ class timer_queue_set
 
   bool all_empty() const
   {
-    for (timer_queue_base* p = first_; p; p = p->next_) {
+    for (auto p = first_; p; p = p->next_) {
       if (!p->empty()) {
         return false;
       }
@@ -45,7 +45,7 @@ class timer_queue_set
   long wait_duration_msec(long max_duration) const
   {
     long min_duration = max_duration;
-    for (timer_queue_base* p = first_; p; p = p->next_) {
+    for (auto p = first_; p; p = p->next_) {
       min_duration = p->wait_duration_msec(min_duration);
     }
     return min_duration;
@@ -54,7 +54,7 @@ class timer_queue_set
   long wait_duration_usec(long max_duration) const
   {
     long min_duration = max_duration;
-    for (timer_queue_base* p = first_; p; p = p->next_) {
+    for (auto p = first_; p; p = p->next_) {
       min_duration = p->wait_duration_usec(min_duration);
     }
     return min_duration;
@@ -62,14 +62,14 @@ class timer_queue_set
 
   void get_ready_timers(op_queue<operation>& ops)
   {
-    for (timer_queue_base* p = first_; p; p = p->next_) {
+    for (auto p = first_; p; p = p->next_) {
       p->get_ready_timers(ops);
     }
   }
 
   void get_all_timers(op_queue<operation>& ops)
   {
-    for (timer_queue_base* p = first_; p; p = p->next_) {
+    for (auto p = first_; p; p = p->next_) {
       p->get_all_timers(ops);
     }
   }
@@ -77,6 +77,5 @@ class timer_queue_set
  private:
   timer_queue_base* first_;
 };
-
 }  // namespace boost::asio::detail
 #endif  // !BOOST_ASIO_DETAIL_TIMER_QUEUE_SET_HPP
