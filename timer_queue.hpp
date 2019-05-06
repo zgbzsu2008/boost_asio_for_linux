@@ -62,7 +62,7 @@ class timer_queue : public timer_queue_base
     if (heap_.empty()) {
       return max_duration;
     }
-    return this->to_msec(T::to_posix_duration(T::subtract(heap_[0].time_, T::now())), max_duration)
+    return this->to_msec(T::to_chrono_duration(T::subtract(heap_[0].time_, T::now())), max_duration);
   }
 
   virtual long wait_duration_usec(long max_duration) const
@@ -70,7 +70,7 @@ class timer_queue : public timer_queue_base
     if (heap_.empty()) {
       return max_duration;
     }
-    return this->to_usec(T::to_posix_duration(T::subtract(heap_[0].time_, T::now())), max_duration)
+    return this->to_usec(T::to_chrono_duration(T::subtract(heap_[0].time_, T::now())), max_duration);
   }
 
   virtual void get_ready_timers(op_queue<operation>& ops)
@@ -97,7 +97,7 @@ class timer_queue : public timer_queue_base
     heap_.clear();
   }
 
-  std::size_t cancle_timer(per_timer_data& timer, op_queue<operation>& ops,
+  std::size_t cancel_timer(per_timer_data& timer, op_queue<operation>& ops,
                            std::size_t max_cancelled = std::numeric_limits<std::size_t>::max())
   {
     std::size_t num_cancelled = 0;
@@ -156,7 +156,7 @@ class timer_queue : public timer_queue_base
     std::size_t child = index * 2 + 1;
     while (child < heap_.size()) {
       std::size_t min_child =
-          (child + 1 == heap_.size() || T::less_than(heap_[child].time_, heap_[child + 1].time)) ? child ? child + 1;
+          (child + 1 == heap_.size() || T::less_than(heap_[child].time_, heap_[child + 1].time_)) ? child : child + 1;
       if (T::less_than(heap_[index].time_, heap_[min_child].time_)) {
         break;
       }
@@ -171,37 +171,51 @@ class timer_queue : public timer_queue_base
     heap_entry tmp = heap_[index1];
     heap_[index1] = heap_[index2];
     heap_[index2] = tmp;
-    heap_[index1].timer_->heap_index = index1;
+    heap_[index1].timer_->heap_index_ = index1;
     heap_[index2].timer_->heap_index_ = index2;
   }
 
   static bool is_positive_infinity(const time_point& time) { return time == time_point::max(); }
 
-  template <typename Duration>
-  long to_sec(const Duration& d, long max_duration) const
+  long to_msec(const duration& d, long max_duration) const
   {
     if (d.count() < 0) {
       return 0;
     }
-    int64_t sec = d.count();
-    if (sec == 0) {
+    int64_t msec = d.count() / 1000000;
+    if (msec == 0) {
       return 1;
     }
-    if (sec > max_duration) {
+    if (msec > max_duration) {
       return max_duration;
     }
-    return static_cast<long>(sec);
+    return static_cast<long>(msec);
+  }
+
+  long to_usec(const duration& d, long max_duration) const
+  {
+    if (d.count() < 0) {
+      return 0;
+    }
+    int64_t usec = d.count() / 1000;
+    if (usec == 0) {
+      return 1;
+    }
+    if (usec > max_duration) {
+      return max_duration;
+    }
+    return static_cast<long>(usec);
   }
 
   void remove_timer(per_timer_data& timer)
   {
     std::size_t index = timer.heap_index_;
     if (!heap_.empty() && index < heap_.size()) {
-      if (index = heap_.size() - 1) {
+      if (index == heap_.size() - 1) {
         timer.heap_index_ = std::numeric_limits<std::size_t>::max();
         heap_.pop_back();
       } else {
-        swap_heap(index, heap.size() - 1);
+        swap_heap(index, heap_.size() - 1);
         timer.heap_index_ = std::numeric_limits<std::size_t>::max();
         heap_.pop_back();
         if (index > 0 && T::less_than(heap_[index].time_, heap_[(index - 1) / 2].time_)) {
@@ -213,7 +227,7 @@ class timer_queue : public timer_queue_base
     }
 
     if (timers_ == &timer) {
-      timers_ = timers_.next;
+      timers_ = timers_->next_;
     }
     if (timer.prev_) {
       timer.prev_->next_ = timer.next_;
@@ -225,6 +239,8 @@ class timer_queue : public timer_queue_base
     timer.prev_ = 0;
   }
 
+  per_timer_data* timers_;
+
   struct heap_entry
   {
     time_point time_;
@@ -232,8 +248,6 @@ class timer_queue : public timer_queue_base
   };
 
   std::vector<heap_entry> heap_;
-
-  per_timer_data* timers_;
 };
 }  // namespace boost::asio::detail
 #endif  // !BOOST_ASIO_DETAIL_TIMER_QUEUE_HPP

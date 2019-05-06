@@ -50,11 +50,10 @@ class hook_allocator
     using other = hook_allocator<Handler, U>;
   };
 
-  T* allocate(std::size_t n) { handler_alloc_helpers::allocate(n, handler_); }
+  T* allocate(std::size_t n) { return handler_alloc_helpers::allocate(n, handler_); }
 
   void deallocate(T* p, std::size_t n) { handler_alloc_helpers::deallocate(p, n, handler_); }
 
- private:
   Handler handler_;
 };
 
@@ -76,7 +75,6 @@ class hook_allocator<Handler, void>
     using other = hook_allocator<Handler, U>;
   };
 
- private:
   Handler handler_;
 };
 

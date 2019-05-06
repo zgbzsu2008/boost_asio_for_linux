@@ -5,11 +5,11 @@
 #include <utility>
 #endif  // defined(BOOST_ASIO_HAS_MOVE)
 
+#include "async_result.hpp"
 #include "basic_io_object.hpp"
 #include "chrono_time_traits.hpp"
 #include "detail_deadline_timer_service.h"
 #include "waitable_timer_service.hpp"
-#include "async_result.hpp"
 
 namespace boost::asio {
 
@@ -18,7 +18,8 @@ template <typename Clock, typename WaitTraits = wait_traits<Clock>,
 class basic_waitable_timer;
 
 template <typename Clock, typename WaitTraits, typename Service>
-class basic_waitable_timer : public basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock,WaitTraits>>>
+class basic_waitable_timer
+    : public basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>
 {
  public:
   using executor_type = io_context::executor_type;
@@ -35,7 +36,7 @@ class basic_waitable_timer : public basic_io_object<detail::deadline_timer_servi
       : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(ioc)
   {
     std::error_code ec;
-    this->get_service().expires_at(this->get_implementation(), expiry_time, ec);
+    this->get_service().expires_at(this->get_impl(), expiry_time, ec);
     if (ec) detail::throw_exception(ec);
   }
 
@@ -43,13 +44,14 @@ class basic_waitable_timer : public basic_io_object<detail::deadline_timer_servi
       : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(ioc)
   {
     std::error_code ec;
-    this->get_service().expires_after(this->get_implementation(), expiry_time, ec);
+    this->get_service().expires_after(this->get_impl(), expiry_time, ec);
     if (ec) detail::throw_exception(ec);
   }
 
 #if defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
   basic_waitable_timer(basic_waitable_timer&& other)
-      : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(std::move(other)){}
+      : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(std::move(other))
+  {}
 
   basic_waitable_timer& operator=(basic_waitable_timer&& other)
   {
@@ -61,14 +63,15 @@ class basic_waitable_timer : public basic_io_object<detail::deadline_timer_servi
 
   ~basic_waitable_timer() {}
 
-  executor_type get_executor() {
-    basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>::get_executor();
+  executor_type get_executor()
+  {
+    return basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>::get_executor();
   }
 
   std::size_t cancel()
   {
     std::error_code ec;
-    std::size_t s = this->get_service().cancle(this->get_implementation(), ec);
+    std::size_t s = this->get_service().cancle(this->get_impl(), ec);
     detail::throw_exception(ec);
     return s;
   }
@@ -76,43 +79,45 @@ class basic_waitable_timer : public basic_io_object<detail::deadline_timer_servi
   std::size_t cancel_one()
   {
     std::error_code ec;
-    std::size_t s = this->get_service().cancle_one(this->get_implementation(), ec);
+    std::size_t s = this->get_service().cancle_one(this->get_impl(), ec);
     return s;
   }
 
-  time_point expiry() const { return this->get_service().expiry(this->get_implementation()); }
+  time_point expiry() const { return this->get_service().expiry(this->get_impl()); }
 
-  std::size_t expires_at(const time_point& expiry_time) const { std::error_code ec;
-    std::size_t s = this->get_service().expires_at(this->get_implementation(), expiry_time, ec);
-    detail::throw_exception(ec);
+  std::size_t expires_at(const time_point& expiry_time) const
+  {
+    std::error_code ec;
+    std::size_t s = this->get_service().expires_at(this->get_impl(), expiry_time, ec);
+    if (ec) detail::throw_exception(ec);
     return s;
   }
 
-  std::size_t expires_after(const duration& expiry_time) { std::error_code ec;
-    std::size_t s = this->get_service().expires_after(this->get_implementation(), expiry_time, ec);
-    detail::throw_exception(ec);
+  std::size_t expires_after(const duration& expiry_time)
+  {
+    std::error_code ec;
+    std::size_t s = this->get_service().expires_after(this->get_impl(), expiry_time, ec);
+    if (ec) detail::throw_exception(ec);
     return s;
   }
 
-  void wait() { std::error_code ec;
-    this->get_service().wait(this->get_implementation(), ec);
-    detail::throw_exception(ec);
+  void wait()
+  {
+    std::error_code ec;
+    this->get_service().wait(this->get_impl(), ec);
+    if(ec) detail::throw_exception(ec);
   }
 
-  void wait(std::error_code& ec) { this->get_service().wait(this->get_implementation(), ec);
-  }
+  void wait(std::error_code& ec) { this->get_service().wait(this->get_impl(), ec); }
 
   template <typename WaitHandler>
   typename detail::async_result_helper<WaitHandler, void(std::error_code)>::result_type async_wait(
-    WaitHandler&& handler)       {
+      WaitHandler&& handler)
+  {
     async_completion<WaitHandler, void(std::error_code ec)> init(handler);
-    this->get_service().async_wait(this->get_implementation(), init.handler_);
+    this->get_service().async_wait(this->get_impl(), init.handler_);
     return init.result_.get();
   }
-
-  private:
-  basic_waitable_timer(const basic_waitable_timer&) = delete;
-  basic_waitable_timer& operator=(const basic_waitable_timer&) = delete;
 };
 }  // namespace boost::asio
 #endif  // !BOOST_ASIO_BASIC_WAITABLE_TIMER_HPP

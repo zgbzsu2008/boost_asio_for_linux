@@ -13,6 +13,12 @@
     <Filter Include="timer">
       <UniqueIdentifier>{f36e309d-715a-4333-81fa-4f517162f6fa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="timer\detail">
+      <UniqueIdentifier>{5d24d40d-40d1-4982-b8d2-dd6d97b3e0d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="timer\timer_queue">
+      <UniqueIdentifier>{b901ba81-cde3-4a38-8e8a-98a5de3eb680}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="associated_allocator2.hpp">
@@ -140,21 +146,6 @@
     <ClInclude Include="epoll_reactor.hpp" />
     <ClInclude Include="async_result.hpp" />
     <ClInclude Include="system_executor.hpp" />
-    <ClInclude Include="wait_op.hpp">
-      <Filter>timer</Filter>
-    </ClInclude>
-    <ClInclude Include="timer_queue_base.hpp">
-      <Filter>timer</Filter>
-    </ClInclude>
-    <ClInclude Include="timer_queue.hpp">
-      <Filter>timer</Filter>
-    </ClInclude>
-    <ClInclude Include="time_traits.hpp">
-      <Filter>timer</Filter>
-    </ClInclude>
-    <ClInclude Include="timer_queue_set.hpp">
-      <Filter>timer</Filter>
-    </ClInclude>
     <ClInclude Include="config.hpp">
       <Filter>detail</Filter>
     </ClInclude>
@@ -170,9 +161,6 @@
     <ClInclude Include="basic_io_object.hpp">
       <Filter>timer</Filter>
     </ClInclude>
-    <ClInclude Include="wait_traits.hpp">
-      <Filter>timer</Filter>
-    </ClInclude>
     <ClInclude Include="waitable_timer_service.hpp">
       <Filter>timer</Filter>
     </ClInclude>
@@ -182,8 +170,38 @@
     <ClInclude Include="system_timer.hpp">
       <Filter>timer</Filter>
     </ClInclude>
+    <ClInclude Include="wait_op.hpp">
+      <Filter>timer\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="wait_traits.hpp">
+      <Filter>timer\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="wait_handler.hpp">
+      <Filter>timer\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="asio_handler_invoke.hpp">
+      <Filter>timer\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="handler_invoke_helpers.hpp">
+      <Filter>timer\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="time_traits.hpp">
+      <Filter>timer\timer_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_queue.hpp">
+      <Filter>timer\timer_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_queue_base.hpp">
+      <Filter>timer\timer_queue</Filter>
+    </ClInclude>
     <ClInclude Include="chrono_time_traits.hpp">
-      <Filter>timer</Filter>
+      <Filter>timer\timer_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="timer_queue_set.hpp">
+      <Filter>timer\timer_queue</Filter>
+    </ClInclude>
+    <ClInclude Include="handler_work.hpp">
+      <Filter>timer\detail</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +221,9 @@
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="epoll_reactor.cpp" />
     <ClCompile Include="main.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_post.hpp">
       <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>

@@ -41,7 +41,7 @@ struct chrono_time_traits
       } else if (time_point::max() - t1 < epoch - t2) {
         return duration::max();
       } else {
-        t1 - t2;
+        return t1 - t2;
       }
     } else {
       if (t2 < epoch) {
@@ -58,7 +58,7 @@ struct chrono_time_traits
 
   static bool less_than(const time_point& t1, const time_point& t2) { return t1 < t2; }
 
-  static std::chrono::nanoseconds to_chrono_duration(const duration& d) { WaitTraits::to_chrono_duration(d); }
+  static std::chrono::nanoseconds to_chrono_duration(const duration& d) { return WaitTraits::to_wait_duration(d); }
 };
 }  // namespace boost::asio::detail
 #endif  // !BOOST_ASIO_DETAIL_CHRONO_TIME_TRAITS_HPP

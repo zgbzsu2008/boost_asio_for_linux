@@ -78,6 +78,7 @@
     <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="asio_handler_invoke.hpp" />
     <ClInclude Include="associated_allocator.hpp" />
     <ClInclude Include="associated_allocator2.hpp" />
     <ClInclude Include="associated_executor.hpp" />
@@ -103,6 +104,8 @@
     <ClInclude Include="fenced_block.hpp" />
     <ClInclude Include="global.hpp" />
     <ClInclude Include="handler_alloc_helpers.hpp" />
+    <ClInclude Include="handler_invoke_helpers.hpp" />
+    <ClInclude Include="handler_work.hpp" />
     <ClInclude Include="has_type_member.hpp" />
     <ClInclude Include="io_context.hpp" />
     <ClInclude Include="is_executor.hpp" />
@@ -137,6 +140,7 @@
     <ClInclude Include="timer_queue_set.hpp" />
     <ClInclude Include="time_traits.hpp" />
     <ClInclude Include="waitable_timer_service.hpp" />
+    <ClInclude Include="wait_handler.hpp" />
     <ClInclude Include="wait_op.hpp" />
     <ClInclude Include="wait_traits.hpp" />
     <ClInclude Include="work_dispatcher.hpp" />
@@ -145,6 +149,7 @@
     <ClCompile Include="epoll_reactor.cpp" />
     <ClCompile Include="execution_context.cpp" />
     <ClCompile Include="io_context.cpp" />
+    <ClCompile Include="test_post.hpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="system_context.cpp" />

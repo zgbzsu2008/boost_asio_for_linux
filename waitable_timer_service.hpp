@@ -7,26 +7,27 @@
 
 namespace boost::asio {
 
-template <typename TimeType, typename WaitTraits = wait_traits<TimeType>>
-class waitable_timer_service : public detail::service_base<deadline_timer_service<TimeType, TimeTraits>>
+template <typename Clock, typename WaitTraits = wait_traits<Clock>>
+class waitable_timer_service : public detail::service_base<deadline_timer_service<Clock, WaitTraits>>
 {
  public:
-  using clock_type = Colock;
+  using clock_type = Clock;
   using duration = typename clock_type::duration;
   using time_point = typename clock_type::time_point;
   using traits_type = WaitTraits;
 
  private:
-  using service_impl_type = deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>;
-
- private:
-  using service_impl_type = deadline_timer_service<traints_type>;
+  using service_impl_type = detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>;
 
  public:
+#if defined(GENERATING_DOCUMENTATION)
+  using impl_type = impl_defined;
+#else
   using impl_type = typename service_impl_type::impl_type;
-
+#endif
+ 
   explicit waitable_timer_service(io_context& ioc)
-      : detail::service_base<deadline_timer_service<TimeType, TimeTraits>>(ioc), service_impl_(io_context)
+      : detail::service_base<waitable_timer_service<Clock, WaitTraits>>(ioc), service_impl_(ioc)
   {}
 
   void construct(impl_type& impl) { service_impl_.construct(impl); }
@@ -45,12 +46,12 @@ class waitable_timer_service : public detail::service_base<deadline_timer_servic
 
   time_point expiry(const impl_type& impl) const { return service_impl_.expiry(impl); }
 
-  std::size_t expires_at(impl_type& impl, const time_point& expiry_time, boost::system::error_code& ec)
+  std::size_t expires_at(impl_type& impl, const time_point& expiry_time, std::error_code& ec)
   {
     return service_impl_.expires_at(impl, expiry_time, ec);
   }
 
-  std::size_t expires_after(impl_type& impl, const duration& expiry_time, boost::system::error_code& ec)
+  std::size_t expires_after(impl_type& impl, const duration& expiry_time, std::error_code& ec)
   {
     return service_impl_.expires_after(impl, expiry_time, ec);
   }
