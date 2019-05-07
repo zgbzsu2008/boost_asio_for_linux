@@ -9,6 +9,7 @@ namespace boost::asio {
 
 #if defined(BOOST_ASIO_HAS_MOVE)
 namespace detail {
+
 template <typename IoObjectService>
 class service_has_move
 {
@@ -42,10 +43,7 @@ class basic_io_object
   executor_type get_executor() { return service_.get_io_context().get_executor(); }
 
  protected:
-  explicit basic_io_object(io_context& ioc) : service_(use_service<IoObjectService>(ioc))
-  {
-    service_.construct(impl_);
-  }
+  explicit basic_io_object(io_context& ioc) : service_(use_service<IoObjectService>(ioc)) { service_.construct(impl_); }
 
 #if defined(GENERATING_DOCUMENTATION)
   basic_io_object(basic_io_object&& other);
@@ -73,8 +71,9 @@ class basic_io_object
 
 #if defined(BOOST_ASIO_HAS_MOVE)
 template <typename IoObjectService>
-class basic_io_object<IoObjectService, true> : private detail::noncopyable
+class basic_io_object<IoObjectService, true>
 {
+ public:
   using service_type = IoObjectService;
   using impl_type = typename service_type::impl_type;
   using executor_type = io_context::executor_type;
@@ -82,24 +81,25 @@ class basic_io_object<IoObjectService, true> : private detail::noncopyable
   executor_type get_executor() { return service_.get_io_context().get_executor(); }
 
  protected:
-  explicit basic_io_object(io_context& ioc) : service_(use_service<IoObjectService>(ioc))
+  explicit basic_io_object(io_context& ioc) : service_(use_service<IoObjectService>(ioc)) { service_.construct(impl_); }
+
+  basic_io_object(basic_io_object&& other) : service_(&other.get_service())
   {
-    service_.construct(impl_);
+    service_.move_construct(impl_, other.impl_);
   }
 
-  basic_io_object(basic_io_object&& other) : service_(&other.get_service()) { service_.move_construct(impl_, impl_); }
   basic_io_object& operator=(basic_io_object&& other)
   {
-    service_.move_assign(impl_, *other.service_, other.impl_);
+    service_.move_assign(impl_, other.service_, other.impl_);
     service_ = other.service_;
     return *this;
   }
 
   template <typename IoObjectService1>
-  basic_io_object(IoObjectService1& other_service, typename IoObjectService1::impl_type& other_implementation)
+  basic_io_object(IoObjectService1& other_service, typename IoObjectService1::impl_type& other_impl)
       : service_(use_service<IoObjectService>(other_service.get_io_context()))
   {
-    service_->converting_move_construct(impl_, other_service, other_implementation);
+    service_->converting_move_construct(impl_, other_service, other_impl);
   }
 
   ~basic_io_object() { service_.destroy(impl_); }
@@ -111,7 +111,7 @@ class basic_io_object<IoObjectService, true> : private detail::noncopyable
 
  private:
   basic_io_object(const basic_io_object&) = delete;
-  void operator=(const basic_io_object&) = delete;
+  basic_io_object& operator=(const basic_io_object&) = delete;
 
   service_type& service_;
   impl_type impl_;

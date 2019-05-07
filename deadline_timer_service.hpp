@@ -36,11 +36,9 @@ class deadline_timer_service
   {}
 
   void construct(impl_type& impl) { service_impl_.construct(impl); }
-
   void destroy(impl_type& impl) { service_impl_.destroy(impl); }
 
   std::size_t cancel(impl_type& impl, std::error_code& ec) { return service_impl_.cancle(impl, ec); }
-
   std::size_t cancel_one(impl_type& impl, std::error_code& ec) { return service_impl_.cancle_one(impl, ec); }
 
   time_point expires_at(const impl_type& impl) const { return service_impl_.expiry(impl); }

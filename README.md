@@ -170,3 +170,14 @@ T* allocate(std::size_t n)
 void deallocate(T* p, std::size_t n)
 
 ```
+
+#### basic_io_object
+```
+using service_type = IoObjectService;
+using impl_type = typename service_type::impl_type;
+using executor_type = io_context::executor_type;
+
+executor_type get_executor()
+service_type& service_;
+impl_type impl_;
+```
