@@ -17,7 +17,6 @@ class async_result : private detail::noncopyable
   result_type get() {}
 };
 
-// std::decay_t<T> handler_
 template <typename T, typename S>
 struct async_completion : private detail::noncopyable
 {

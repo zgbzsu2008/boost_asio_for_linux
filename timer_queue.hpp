@@ -139,7 +139,7 @@ class timer_queue : public timer_queue_base
   }
 
  private:
-  void up_head(std::size_t index)
+  void up_heap(std::size_t index)
   {
     while (index > 0) {
       std::size_t parent = (index - 1) / 2;
@@ -219,7 +219,7 @@ class timer_queue : public timer_queue_base
         timer.heap_index_ = std::numeric_limits<std::size_t>::max();
         heap_.pop_back();
         if (index > 0 && T::less_than(heap_[index].time_, heap_[(index - 1) / 2].time_)) {
-          up_head(index);
+          up_heap(index);
         } else {
           down_heap(index);
         }

@@ -50,9 +50,9 @@ class hook_allocator
     using other = hook_allocator<Handler, U>;
   };
 
-  T* allocate(std::size_t n) { return handler_alloc_helpers::allocate(n, handler_); }
+  T* allocate(std::size_t n) { return static_cast<T*>(handler_alloc_helpers::allocate(sizeof(T) * n, handler_)); }
 
-  void deallocate(T* p, std::size_t n) { handler_alloc_helpers::deallocate(p, n, handler_); }
+  void deallocate(T* p, std::size_t n) { handler_alloc_helpers::deallocate(p, sizeof(T) * n, handler_); }
 
   Handler handler_;
 };

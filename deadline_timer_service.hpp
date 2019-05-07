@@ -1,7 +1,7 @@
 #ifndef BOOST_ASIO_DEADLINE_TIMER_SERVICE_HPP
 #define BOOST_ASIO_DEADLINE_TIMER_SERVICE_HPP
 
-#include "detail_deadline_timer_service.h"
+#include "detail_deadline_timer_service.hpp"
 #include "io_context.hpp"
 #include "time_traits.hpp"
 

@@ -38,7 +38,7 @@ typename detail::async_result_helper<T, void()>::result_type post(
     E& ctx, T&& token, typename std::enable_if<std::is_convertible<E&, execution_context&>::value>::type* =0)
 {
   using handler = typename detail::async_result_helper<T, void()>::value_type;
-  async_completion<T, void()> init(std::forward<T>(token));
+  async_completion<T, void()> init(token);
   typename associated_allocator<handler>::type alloc(get_associated_allocator(init.handler_));
 
   ctx.get_executor().post(detail::work_dispatcher<handler>(init.handler_), alloc);

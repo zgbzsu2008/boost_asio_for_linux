@@ -92,7 +92,7 @@
     <ClInclude Include="conditionally_enabled_mutex.hpp" />
     <ClInclude Include="config.hpp" />
     <ClInclude Include="deadline_timer_service.hpp" />
-    <ClInclude Include="detail_deadline_timer_service.h" />
+    <ClInclude Include="detail_deadline_timer_service.hpp" />
     <ClInclude Include="epoll_reactor.hpp" />
     <ClInclude Include="error_code.hpp" />
     <ClInclude Include="event.hpp" />

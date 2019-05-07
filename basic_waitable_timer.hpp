@@ -8,7 +8,7 @@
 #include "async_result.hpp"
 #include "basic_io_object.hpp"
 #include "chrono_time_traits.hpp"
-#include "detail_deadline_timer_service.h"
+#include "detail_deadline_timer_service.hpp"
 #include "waitable_timer_service.hpp"
 
 namespace boost::asio {

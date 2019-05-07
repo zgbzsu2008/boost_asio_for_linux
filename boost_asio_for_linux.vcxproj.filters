@@ -164,9 +164,6 @@
     <ClInclude Include="waitable_timer_service.hpp">
       <Filter>timer</Filter>
     </ClInclude>
-    <ClInclude Include="detail_deadline_timer_service.h">
-      <Filter>timer</Filter>
-    </ClInclude>
     <ClInclude Include="system_timer.hpp">
       <Filter>timer</Filter>
     </ClInclude>
@@ -202,6 +199,9 @@
     </ClInclude>
     <ClInclude Include="handler_work.hpp">
       <Filter>timer\detail</Filter>
+    </ClInclude>
+    <ClInclude Include="detail_deadline_timer_service.hpp">
+      <Filter>timer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
