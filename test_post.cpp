@@ -10,7 +10,7 @@ namespace asio_post {
 
 using namespace boost::asio;
 
-inline int test_post()
+int main()
 {
   io_context ioc;
   auto work = make_work_guard(ioc);

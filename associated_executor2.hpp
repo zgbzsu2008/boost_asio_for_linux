@@ -21,5 +21,9 @@ auto get_associated_executor(const T& t, const Executor& ex = Executor())
     return ex;
   }
 }
+
+template <typename T, typename Executor = system_executor>
+using associated_executor_t =
+    typename std::conditional_t<has_type_executor_type<T>::value, typename T::executor_type, Executor>;
 }  // namespace boost::asio
 #endif  // !BOOST_ASIO_ASSOCIATED_EXECUTOR_HPP

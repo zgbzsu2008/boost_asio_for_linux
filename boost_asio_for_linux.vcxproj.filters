@@ -205,12 +205,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="test_associated_allocator.hpp">
-      <Filter>test</Filter>
-    </ClCompile>
-    <ClCompile Include="test_associated_executor.hpp">
-      <Filter>test</Filter>
-    </ClCompile>
     <ClCompile Include="system_context.cpp">
       <Filter>detail</Filter>
     </ClCompile>
@@ -223,7 +217,13 @@
     <ClCompile Include="main.cpp">
       <Filter>test</Filter>
     </ClCompile>
-    <ClCompile Include="test_post.hpp">
+    <ClCompile Include="test_post.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_associated_executor.cpp">
+      <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_associated_allocator.cpp">
       <Filter>test</Filter>
     </ClCompile>
   </ItemGroup>

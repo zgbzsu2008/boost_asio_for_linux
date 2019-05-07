@@ -3,13 +3,14 @@
 #include "io_context.hpp"
 #include "service_registry_helpers.hpp"
 
-namespace associated_executor {
+namespace test_associated_executor {
+
 using namespace boost::asio;
 
 struct no_executor
 {};
 
-inline int test_associated_executor()
+int main()
 {
   auto e1 = get_associated_executor(no_executor());
   static_assert(std::is_same<decltype(e1), system_executor>::value);
@@ -28,4 +29,4 @@ inline int test_associated_executor()
 
   return 0;
 }
-}  // namespace associated_executor
+}  // namespace test_associated_executor

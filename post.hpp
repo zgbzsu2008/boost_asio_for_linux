@@ -11,7 +11,7 @@ namespace boost::asio {
 template <typename T>
 typename detail::async_result_helper<T, void()>::result_type post(T&& token)
 {
-  using handler = typename detail::async_result_helper<T, void()>::value_type;
+  using handler = typename detail::async_result_helper<T, void()>::handler_type;
   async_completion<T, void()> init(std::forward<T>(token));  // std::decay_t<T>
 
   typename associated_executor<handler>::type ex(get_associated_executor(init.handler_));       // system_executor
@@ -25,7 +25,7 @@ template <typename T, typename E>
 typename detail::async_result_helper<T, void()>::result_type post(
     E& ex, T&& token, typename std::enable_if<detail::is_executor<E>::value>::type* =0)
 {
-  using handler = typename detail::async_result_helper<T, void()>::value_type;
+  using handler = typename detail::async_result_helper<T, void()>::handler_type;
   async_completion<T, void()> init(std::forward<T>(token));
   typename associated_allocator<handler>::type alloc(get_associated_allocator(init.handler_));
 
@@ -37,7 +37,7 @@ template <typename T, typename E>
 typename detail::async_result_helper<T, void()>::result_type post(
     E& ctx, T&& token, typename std::enable_if<std::is_convertible<E&, execution_context&>::value>::type* =0)
 {
-  using handler = typename detail::async_result_helper<T, void()>::value_type;
+  using handler = typename detail::async_result_helper<T, void()>::handler_type;
   async_completion<T, void()> init(token);
   typename associated_allocator<handler>::type alloc(get_associated_allocator(init.handler_));
 
