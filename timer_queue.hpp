@@ -31,7 +31,7 @@ class timer_queue : public timer_queue_base
 
   timer_queue() : timers_(), heap_() {}
 
-  bool enqueue_timer(const time_point time, per_timer_data& timer, wait_op* op)
+  bool enqueue_timer(const time_point& time, per_timer_data& timer, wait_op* op)
   {
     if ((timer.prev_ == 0) && (&timer != timers_)) {
       if (this->is_positive_infinity(time)) {
@@ -80,7 +80,7 @@ class timer_queue : public timer_queue_base
       while (!heap_.empty() && !T::less_than(now, heap_[0].time_)) {
         per_timer_data* timer = heap_[0].timer_;
         ops.push(timer->op_queue_);
-        remove_timer(*timer);
+        this->remove_timer(*timer);
       }
     }
   }

@@ -28,7 +28,7 @@ class service_has_move
 }  // namespace detail
 #endif  // !BOOST_ASIO_HAS_MOVE
 
-#if !defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
+#if !defined(BOOST_ASIO_HAS_MOVE)
 template <typename IoObjectService>
 #else
 template <typename IoObjectService, bool Movable = detail::service_has_move<IoObjectService>::value>
@@ -44,15 +44,6 @@ class basic_io_object
 
  protected:
   explicit basic_io_object(io_context& ioc) : service_(use_service<IoObjectService>(ioc)) { service_.construct(impl_); }
-
-#if defined(GENERATING_DOCUMENTATION)
-  basic_io_object(basic_io_object&& other);
-
-  basic_io_object& operator=(basic_io_object&& other);
-
-  template <typename IoObjectService1>
-  basic_io_object(IoObjectService1& other_service, typename IoObjectService1::impl_type& other_implementation);
-#endif  // !GENERATING_DOCUMENTATION
 
   ~basic_io_object() { service_.destroy(impl_); }
 

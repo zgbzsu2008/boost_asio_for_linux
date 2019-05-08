@@ -8,7 +8,7 @@
 namespace boost::asio {
 
 template <typename Clock, typename WaitTraits = wait_traits<Clock>>
-class waitable_timer_service : public detail::service_base<deadline_timer_service<Clock, WaitTraits>>
+class waitable_timer_service : public detail::service_base<waitable_timer_service<Clock, WaitTraits>>
 {
  public:
   using clock_type = Clock;
@@ -20,11 +20,7 @@ class waitable_timer_service : public detail::service_base<deadline_timer_servic
   using service_impl_type = detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>;
 
  public:
-#if defined(GENERATING_DOCUMENTATION)
-  using impl_type = impl_defined;
-#else
   using impl_type = typename service_impl_type::impl_type;
-#endif
  
   explicit waitable_timer_service(io_context& ioc)
       : detail::service_base<waitable_timer_service<Clock, WaitTraits>>(ioc), service_impl_(ioc)
@@ -41,7 +37,6 @@ class waitable_timer_service : public detail::service_base<deadline_timer_servic
   }
 
   std::size_t cancle(service_impl_type& impl, std::error_code& ec) { return service_impl_.cancle(impl, ec); }
-
   std::size_t cancle_one(service_impl_type& impl, std::error_code& ec) { return service_impl_.cancle_one(impl, ec); }
 
   time_point expiry(const impl_type& impl) const { return service_impl_.expiry(impl); }
@@ -63,7 +58,7 @@ class waitable_timer_service : public detail::service_base<deadline_timer_servic
       impl_type& impl, WaitHandler&& handler)
   {
     async_completion<WaitHandler, void(std::error_code)> init(handler);
-    service_impl_.async_wait(impl, init.completion_handler);
+    service_impl_.async_wait(impl, init.handler_);
     return init.result.get();
   }
 

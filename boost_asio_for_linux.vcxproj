@@ -76,9 +76,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(IncludePath)</IncludePath>
+    <TargetName>asio</TargetName>
+    <TargetExt />
   </PropertyGroup>
   <ItemGroup>
-    <ClInclude Include="asio_handler_invoke.hpp" />
+    <ClInclude Include="handler_alloc_hook.hpp" />
+    <ClInclude Include="handler_invoke_hook.hpp" />
     <ClInclude Include="associated_allocator.hpp" />
     <ClInclude Include="associated_allocator2.hpp" />
     <ClInclude Include="associated_executor.hpp" />

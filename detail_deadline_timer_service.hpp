@@ -20,9 +20,9 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
 
   struct impl_type : private noncopyable
   {
-    time_point expiry;
-    bool might_have_pending_waits;
-    typename timer_queue<Clock>::per_timer_data timer_data;
+    time_point expiry;                                       // 时间戳
+    bool might_have_pending_waits;                           // 是否还在等待中
+    typename timer_queue<Clock>::per_timer_data timer_data;  // 定时器数据[id, wait_op, ...]
   };
 
   deadline_timer_service(io_context& ioc)
@@ -69,7 +69,6 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
 
     impl.expiry = other_impl.expiry;
     other_impl.expiry = time_point();
-
     impl.might_have_pending_waits = other_impl.might_have_pending_waits;
     other_impl.might_have_pending_waits = false;
   }
@@ -101,9 +100,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
   }
 
   time_point expiry(const impl_type& impl) const { return impl.expiry; }
-
   time_point expires_at(const impl_type& impl) const { return impl.expiry; }
-
   duration expires_from_now(const impl_type& impl) const { return Clock::subtract(this->expiry(impl), Clock::now()); }
 
   std::size_t expires_at(impl_type& impl, const time_point& expiry_time, std::error_code& ec)
@@ -128,7 +125,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
   {
     time_point now = Clock::now();
     ec = std::error_code();
-    while (Clock::less_than(now, impl.expiry) && !ec) {
+    while (Clock::less_than(now, impl.expiry) && !ec) { // 如果在等待时修改了impl值，所以加while循环
       this->do_wait(Clock::to_chrono_duration(Clock::subtract(impl.expiry, now)), ec);
       now = Clock::now();
     }

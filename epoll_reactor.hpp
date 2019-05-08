@@ -162,7 +162,7 @@ class epoll_reactor : public execution_context_service_base<epoll_reactor>
 
   int epoll_fd_;
   int timer_fd_;
-  timer_queue_set timer_queues;
+  timer_queue_set timer_queues_;
 
   bool shutdown_;
   mutable mutex mutex_;

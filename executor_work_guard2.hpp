@@ -54,7 +54,7 @@ inline auto make_work_guard(const T& t)
 {
   if constexpr (detail::is_executor<T>::value) {
     return executor_work_guard<T>(t);
-  } else if constexpr (has_type_executor_type<T>) {
+  } else if constexpr (has_type_executor_type<T>::value) {
     static_assert(std::is_convertible<T&, execution_context&>::value);
     static_assert(std::is_member_function_pointer<(decltype(&T::get_executor))>::value);
     return executor_work_guard<typename T::executor_type>(t.get_executor());

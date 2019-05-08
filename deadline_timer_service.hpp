@@ -8,11 +8,7 @@
 namespace boost::asio {
 template <typename Clock, typename TimeTraits = time_traits<Clock>>
 class deadline_timer_service
-#if defined(GENERATING_DOCUMENTATION)
     : public detail::service_base<deadline_timer_service<Clock, TimeTraits>>
-#else
-    : public detail::service_base<deadline_timer_service<Clock, TimeTraits>>
-#endif
 {
  public:
   using clock_type = Clock;
@@ -24,12 +20,7 @@ class deadline_timer_service
   using service_impl_type = detail::deadline_timer_service<traits_type>;
 
  public:
-#if defined(GENERATING_DOCUMENTATION)
-  static io_context::id id;
-  typedef implementation_defined implementation_type;
-#else
   using impl_type = typename service_impl_type::impl_type;
-#endif
 
   explicit deadline_timer_service(boost::asio::io_context& io_context)
       : detail::service_base<deadline_timer_service<Clock, TimeTraits>>(io_context), service_impl_(io_context)

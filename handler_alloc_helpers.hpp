@@ -6,6 +6,7 @@
 #include "associated_allocator.hpp"
 #include "noncopyable.hpp"
 #include "recycling_allocator.hpp"
+#include "handler_alloc_hook.hpp"
 
 namespace handler_alloc_helpers {
 template <typename Handler>

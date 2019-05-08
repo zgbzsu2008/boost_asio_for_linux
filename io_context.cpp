@@ -1,22 +1,18 @@
-#ifndef BOOST_ASIO_IMPL_IO_CONTEXT_IPP
-#define BOOST_ASIO_IMPL_IO_CONTEXT_IPP
-
 #include "io_context.hpp"
 #include <iostream>
 #include "error_code.hpp"
 #include "service_registry_helpers.hpp"
 #include "throw_exception.hpp"
 
-namespace boost::asio
+namespace boost::asio {
+io_context::io_context() : impl_(add_impl(new impl_type(*this, std::max(2U, std::thread::hardware_concurrency()))))
 {
-io_context::io_context() : impl_(add_impl(new impl_type(*this, std::max(2U, std::thread::hardware_concurrency() * 2))))
-{
-  std::cout << "io_context(): concurrency_hint = " << impl_.concurrency_hint() << '\n';
+  std::cout << "io_context::ctor: beginning thread nums = " << impl_.concurrency_hint() << '\n';
 }
 
 io_context::io_context(int concurrency_hint) : impl_(add_impl(new impl_type(*this, std::max(1, concurrency_hint))))
 {
-  std::cout << "io_context(): concurrency_hint = " << impl_.concurrency_hint() << '\n';
+  std::cout << "io_context::ctor(): beginning thread nums = " << impl_.concurrency_hint() << '\n';
 }
 
 io_context::impl_type& io_context::add_impl(io_context::impl_type* impl)
@@ -85,5 +81,3 @@ void io_context::executor_type::on_work_finished() const { io_context_.impl_.wor
 bool io_context::executor_type::running_in_this_thread() const { return io_context_.impl_.can_dispatch(); }
 
 }  // namespace boost::asio
-
-#endif  // BOOST_ASIO_IO_CONTEXT_IPP

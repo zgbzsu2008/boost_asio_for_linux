@@ -218,12 +218,13 @@ void epoll_reactor::cleanup_descriptor_data(ptr_descriptor_data& descriptor_data
   }
 }
 
-void epoll_reactor::epoll_reactor::interrupt()
+void epoll_reactor::interrupt()
 {
   epoll_event ev = {0, {0}};
   ev.events = EPOLLIN | EPOLLERR | EPOLLET;
   ev.data.ptr = &interrupter_;
   ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, interrupter_.fd(), &ev);
+  std::cout << "epoll_reactor::interrupt(): fd = " << interrupter_.fd() << '\n';
 }
 
 int epoll_reactor::do_epoll_create()
@@ -253,13 +254,13 @@ int epoll_reactor::do_timerfd_create()
 void epoll_reactor::do_add_timer_queue(timer_queue_base& queue)
 {
   mutex::scoped_lock lock(mutex_);
-  timer_queues.insert(&queue);
+  timer_queues_.insert(&queue);
 }
 
 void epoll_reactor::do_remove_timer_queue(timer_queue_base& queue)
 {
   mutex::scoped_lock lock(mutex_);
-  timer_queues.erase(&queue);
+  timer_queues_.erase(&queue);
 }
 
 void epoll_reactor::update_timeout()
@@ -279,14 +280,14 @@ void epoll_reactor::update_timeout()
 int epoll_reactor::get_timeout(int msec)
 {
   const int max_msec = 5 * 60 * 1000;
-  return (int)timer_queues.wait_duration_msec((msec < 0 || max_msec < msec) ? max_msec : msec);
+  return (int)timer_queues_.wait_duration_msec((msec < 0 || max_msec < msec) ? max_msec : msec);
 }
 
 #if defined(BOOST_ASIO_HAS_TIMERFD)
 int epoll_reactor::get_timeout(itimerspec& ts)
 {
   ts.it_interval = {0, 0};
-  long usec = timer_queues.wait_duration_usec(5 * 60 * 1000 * 1000);
+  long usec = timer_queues_.wait_duration_usec(5 * 60 * 1000 * 1000);
   ts.it_value.tv_sec = usec / 1000000;
   ts.it_value.tv_nsec = usec ? (usec % 1000000) * 1000 : 1;
   return usec ? 0 : TFD_TIMER_ABSTIME;
@@ -317,7 +318,7 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
       timeout = get_timeout(timeout);
     }
   }
-
+  
   epoll_event events[128];
   int num_events = ::epoll_wait(epoll_fd_, events, 128, timeout);
 
@@ -330,6 +331,7 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
   for (int i = 0; i < num_events; i++) {
     void* ptr = events[i].data.ptr;
     if (ptr == &interrupter_) {
+      std::cout << "epoll_reactor::run(): fd = " << interrupter_.fd() << " happend events type = interrupter\n";
 #if defined(BOOST_ASIO_HAS_TIMERFD)
       if (timer_fd_ == -1) {
         check_timers = true;
@@ -340,6 +342,7 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
     }
 #if defined(BOOST_ASIO_HAS_TIMERFD)
     else if (ptr == &timer_fd_) {
+      std::cout << "epoll_reactor::run(): fd = " << timer_fd_ << " happend events type = timer\n";
       check_timers = true;
     }
 #endif  // !BOOST_ASIO_HAS_TIMERFD
@@ -351,13 +354,13 @@ void epoll_reactor::run(long usec, op_queue<operation>& ops)
       } else {
         descriptor_data->add_ready_events(events[i].events);
       }
+      std::cout << "epoll_reactor::run(): fd = " << descriptor_data->descriptor_ << " happend events type = socket\n";
     }
   }
-  std::cout << "epoll_reactor::run(): [" << num_events << "] events happend\n";
 
   if (check_timers) {
     mutex::scoped_lock lock(mutex_);
-    timer_queues.get_ready_timers(ops);
+    timer_queues_.get_ready_timers(ops);
 
 #if defined(BOOST_ASIO_HAS_TIMERFD)
     if (timer_fd_ != -1) {

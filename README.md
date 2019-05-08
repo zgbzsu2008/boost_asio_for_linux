@@ -168,7 +168,6 @@ Value* next_by_key() const // 在函数递归调用时，查看栈内变量数�
 template <typename U> struct rebind
 T* allocate(std::size_t n)
 void deallocate(T* p, std::size_t n)
-
 ```
 
 #### basic_io_object
@@ -176,8 +175,61 @@ void deallocate(T* p, std::size_t n)
 using service_type = IoObjectService;
 using impl_type = typename service_type::impl_type;
 using executor_type = io_context::executor_type;
-
-executor_type get_executor()
+executor_type get_executor(); 
 service_type& service_;
 impl_type impl_;
+```
+
+#### detail::deadline_timer_service
+```
+timer_queue<Clock> timer_queue_;
+timer_scheduler& scheduler_;
+deadline_timer_service(io_context& ioc)
+{
+    scheduler_.init_task();
+    scheduler_.add_timer_queue(timer_queue_);
+}
+std::size_t cancle(impl_type& impl, std::error_code& ec)
+std::size_t cancle_one(impl_type& impl, std::error_code& ec)
+void wait(impl_type& impl, std::error_code& ec)
+void async_wait(impl_type& impl, Handler& handler)
+```
+
+#### deadline_timer_service
+委托detail::deadline_timer_service实现
+```
+using service_impl_type = detail::deadline_timer_service<traits_type>;
+```
+
+#### waitable_timer_service
+委托deadline_timer_service实现
+```
+using service_impl_type = detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>;
+```
+
+#### timer_queue_set
+维护一个单链表 元素定时器队列
+```
+void insert(timer_queue_base* q)
+void erase(timer_queue_base* q)
+```
+
+#### timer_queue_base
+保存定时器队列的基类
+```
+virtual bool empty() const = 0;
+virtual long wait_duration_msec(long max_duration) const = 0;
+virtual long wait_duration_usec(long max_duration) const = 0;
+virtual void get_ready_timers(op_queue<operation>& ops) = 0;
+virtual void get_all_timers(op_queue<operation>& ops) = 0;
+```
+
+#### timer_queue
+继承timer_queue_base 保存定时器队列模板类
+```
+per_timer_data* timers_; // 链式存储
+std::vector<heap_entry> heap_; // 最小堆存储
+
+// 定时器入队
+bool enqueue_timer(const time_point& time, per_timer_data& timer, wait_op* op)
 ```

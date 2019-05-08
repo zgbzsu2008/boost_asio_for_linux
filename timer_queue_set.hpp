@@ -14,6 +14,7 @@ class timer_queue_set
     q->next_ = first_;
     first_ = q;
   }
+
   void erase(timer_queue_base* q)
   {
     if (first_) {

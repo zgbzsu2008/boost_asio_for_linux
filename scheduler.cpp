@@ -313,7 +313,7 @@ std::size_t scheduler::do_run_one(mutex::scoped_lock &lock, thread_info &this_th
         return 1;
       }
     } else {
-      std::cout << "scheduler::do_run_one(): waiting pid= " << std::this_thread::get_id() << '\n';
+      std::cout << "scheduler::do_run_one(): waiting... pid= " << std::this_thread::get_id() << '\n';
       wakeup_event_.clear(lock);
       wakeup_event_.wait(lock);
     }
@@ -449,12 +449,9 @@ void scheduler::wake_one_thread_and_unlock(mutex::scoped_lock &lock)
     if (!task_interrupted_ && task_) {
       task_interrupted_ = true;
       task_->interrupt();
-      std::cout << "scheduler::wake_one_thread_and_unlock(): interrupt\n";
     }
     lock.unlock();
   }
 }
-
 }  // namespace boost::asio::detail
-
 #endif  // !BOOST_ASIO_DETAIL_SCHEDULER_CPP

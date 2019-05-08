@@ -2,7 +2,8 @@
 #define BOOST_ASIO_DETAIL_HANDLER_INVOKE_HELPERS_HPP
 
 #include <memory>
-#include "asio_handler_invoke.hpp"
+#include "handler_invoke_hook.hpp"
+#include "config.hpp"
 
 namespace boost_asio_handler_invoke_helpers {
 
@@ -13,7 +14,7 @@ inline void invoke(Function& function, Context& context) {
   tmp();
 #else
   using boost::asio::asio_handler_invoke;
-  asio_handler_invoke(function, std::addressof(context))
+  asio_handler_invoke(function, std::addressof(context));
 #endif
 }
 
@@ -25,7 +26,7 @@ inline void invoke(const Function& function, Context& context)
   tmp();
 #else
   using boost::asio::asio_handler_invoke;
-  asio_handler_invoke(function, std::addressof(context))
+  asio_handler_invoke(function, std::addressof(context));
 #endif
 }
 

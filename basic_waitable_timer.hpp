@@ -1,10 +1,7 @@
 #ifndef BOOST_ASIO_BASIC_WAITABLE_TIMER_HPP
 #define BOOST_ASIO_BASIC_WAITABLE_TIMER_HPP
 
-#if defined(BOOST_ASIO_HAS_MOVE)
 #include <utility>
-#endif  // defined(BOOST_ASIO_HAS_MOVE)
-
 #include "async_result.hpp"
 #include "basic_io_object.hpp"
 #include "chrono_time_traits.hpp"
@@ -48,7 +45,7 @@ class basic_waitable_timer
     if (ec) detail::throw_exception(ec);
   }
 
-#if defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
+#if defined(BOOST_ASIO_HAS_MOVE)
   basic_waitable_timer(basic_waitable_timer&& other)
       : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(std::move(other))
   {}
@@ -59,13 +56,14 @@ class basic_waitable_timer
         std::move(other));
     return *this;
   }
-#endif  // defined(BOOST_ASIO_HAS_MOVE) || defined(GENERATING_DOCUMENTATION)
+#endif  // defined(BOOST_ASIO_HAS_MOVE)
 
   ~basic_waitable_timer() {}
 
   executor_type get_executor()
   {
-    return basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>::get_executor();
+    return basic_io_object<
+        detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>::get_executor();
   }
 
   std::size_t cancel()
@@ -105,7 +103,7 @@ class basic_waitable_timer
   {
     std::error_code ec;
     this->get_service().wait(this->get_impl(), ec);
-    if(ec) detail::throw_exception(ec);
+    if (ec) detail::throw_exception(ec);
   }
 
   void wait(std::error_code& ec) { this->get_service().wait(this->get_impl(), ec); }
