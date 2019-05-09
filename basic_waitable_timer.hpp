@@ -14,6 +14,7 @@ template <typename Clock, typename WaitTraits = wait_traits<Clock>,
           typename Service = waitable_timer_service<Clock, WaitTraits>>
 class basic_waitable_timer;
 
+// 定时器模板类
 template <typename Clock, typename WaitTraits, typename Service>
 class basic_waitable_timer
     : public basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>
@@ -29,6 +30,7 @@ class basic_waitable_timer
       : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(ioc)
   {}
 
+  // 使用time_point构造定时器
   basic_waitable_timer(io_context& ioc, const time_point& expiry_time)
       : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(ioc)
   {
@@ -37,6 +39,7 @@ class basic_waitable_timer
     if (ec) detail::throw_exception(ec);
   }
 
+  // 使用duration构造定时器
   basic_waitable_timer(io_context& ioc, const duration& expiry_time)
       : basic_io_object<detail::deadline_timer_service<detail::chrono_time_traits<Clock, WaitTraits>>>(ioc)
   {
@@ -60,6 +63,7 @@ class basic_waitable_timer
 
   ~basic_waitable_timer() {}
 
+  // 返回执行者
   executor_type get_executor()
   {
     return basic_io_object<
@@ -83,7 +87,7 @@ class basic_waitable_timer
 
   time_point expiry() const { return this->get_service().expiry(this->get_impl()); }
 
-  std::size_t expires_at(const time_point& expiry_time) const
+  std::size_t expires_at(const time_point& expiry_time)
   {
     std::error_code ec;
     std::size_t s = this->get_service().expires_at(this->get_impl(), expiry_time, ec);

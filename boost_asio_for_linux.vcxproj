@@ -149,11 +149,14 @@
     <ClInclude Include="work_dispatcher.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="test_async_wait.cpp" />
+    <ClCompile Include="test_bind_member_print.cpp" />
+    <ClCompile Include="test_bind_print.cpp" />
     <ClCompile Include="epoll_reactor.cpp" />
     <ClCompile Include="execution_context.cpp" />
     <ClCompile Include="io_context.cpp" />
     <ClCompile Include="test_post.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="test_wait.cpp" />
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="system_context.cpp" />
     <ClCompile Include="test_associated_allocator.cpp" />

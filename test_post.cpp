@@ -6,7 +6,7 @@
 #include "service_registry_helpers.hpp"
 #include "thread_group.hpp"
 
-namespace asio_post {
+namespace test_post {
 
 using namespace boost::asio;
 

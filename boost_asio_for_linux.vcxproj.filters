@@ -16,6 +16,9 @@
     <Filter Include="timer\timer_queue">
       <UniqueIdentifier>{b901ba81-cde3-4a38-8e8a-98a5de3eb680}</UniqueIdentifier>
     </Filter>
+    <Filter Include="test\timer">
+      <UniqueIdentifier>{db9ce2e0-3ebf-49d6-ac77-3768bdb31aee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="associated_allocator2.hpp">
@@ -214,9 +217,6 @@
     <ClCompile Include="io_context.cpp" />
     <ClCompile Include="scheduler.cpp" />
     <ClCompile Include="epoll_reactor.cpp" />
-    <ClCompile Include="main.cpp">
-      <Filter>test</Filter>
-    </ClCompile>
     <ClCompile Include="test_post.cpp">
       <Filter>test</Filter>
     </ClCompile>
@@ -225,6 +225,18 @@
     </ClCompile>
     <ClCompile Include="test_associated_allocator.cpp">
       <Filter>test</Filter>
+    </ClCompile>
+    <ClCompile Include="test_async_wait.cpp">
+      <Filter>test\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="test_bind_member_print.cpp">
+      <Filter>test\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="test_bind_print.cpp">
+      <Filter>test\timer</Filter>
+    </ClCompile>
+    <ClCompile Include="test_wait.cpp">
+      <Filter>test\timer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

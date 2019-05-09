@@ -4,6 +4,8 @@
 #include "timer_queue_base.hpp"
 
 namespace boost::asio::detail {
+
+// 用于存储定时器队列的单链表
 class timer_queue_set
 {
  public:

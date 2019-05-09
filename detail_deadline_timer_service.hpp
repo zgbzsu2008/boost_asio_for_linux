@@ -18,6 +18,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
   using duration = typename Clock::duration;
   using timer_scheduler = epoll_reactor;
 
+  // 数据
   struct impl_type : private noncopyable
   {
     time_point expiry;                                       // 时间戳
@@ -25,6 +26,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     typename timer_queue<Clock>::per_timer_data timer_data;  // 定时器数据[id, wait_op, ...]
   };
 
+  // 创建调度器并将定时器队列添加到调度器中
   deadline_timer_service(io_context& ioc)
       : service_base<deadline_timer_service<Clock>>(ioc), scheduler_(use_service<timer_scheduler>(ioc))
   {
@@ -32,22 +34,26 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     scheduler_.add_timer_queue(timer_queue_);
   }
 
+  // 移除定时器队列
   ~deadline_timer_service() { scheduler_.remove_timer_queue(timer_queue_); }
 
   void shutdown() {}
 
+  // 创建
   void construct(impl_type& impl)
   {
     impl.expiry = time_point();
     impl.might_have_pending_waits = false;
   }
 
+  // 销毁
   void destroy(impl_type& impl)
   {
     std::error_code ec;
     this->cancle(impl, ec);
   }
 
+  // 移动
   void move_construct(impl_type& impl, impl_type& other_impl)
   {
     scheduler_.move_timer(timer_queue_, impl.timer_data, other_impl.timer_data);
@@ -57,6 +63,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     other_impl.might_have_pending_waits = false;
   }
 
+  // 移动赋值
   void move_assign(impl_type& impl, deadline_timer_service& other_service, impl_type& other_impl)
   {
     if (this != &other_service) {
@@ -73,6 +80,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     other_impl.might_have_pending_waits = false;
   }
 
+  // 取消定时器队列整队
   std::size_t cancle(impl_type& impl, std::error_code& ec)
   {
     if (!impl.might_have_pending_waits) {
@@ -85,6 +93,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     return count;
   }
 
+  // 取消定时器队列的top值
   std::size_t cancle_one(impl_type& impl, std::error_code& ec)
   {
     if (!impl.might_have_pending_waits) {
@@ -121,6 +130,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     return this->expires_at(impl, Clock::add(Clock::now(), expiry_time), ec);
   }
 
+  // 同步等待
   void wait(impl_type& impl, std::error_code& ec)
   {
     time_point now = Clock::now();
@@ -131,6 +141,7 @@ class deadline_timer_service : public service_base<deadline_timer_service<Clock>
     }
   }
 
+  // 异步等待
   template <typename Handler>
   void async_wait(impl_type& impl, Handler& handler)
   {

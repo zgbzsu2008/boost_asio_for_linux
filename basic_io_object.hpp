@@ -28,6 +28,8 @@ class service_has_move
 }  // namespace detail
 #endif  // !BOOST_ASIO_HAS_MOVE
 
+// basic_io_object 成员 service_type, impl_type
+// service_type 服务处理数据 impl_type
 #if !defined(BOOST_ASIO_HAS_MOVE)
 template <typename IoObjectService>
 #else

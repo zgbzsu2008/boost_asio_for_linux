@@ -6,6 +6,8 @@
 #include "wait_traits.hpp"
 
 namespace boost::asio::detail {
+
+// timer_traits·¶Î§¼ì²â°æ
 template <typename Clock, typename WaitTraits>
 struct chrono_time_traits
 {
