@@ -80,6 +80,7 @@
     <TargetExt />
   </PropertyGroup>
   <ItemGroup>
+    <ClInclude Include="bind_executor.hpp" />
     <ClInclude Include="handler_alloc_hook.hpp" />
     <ClInclude Include="handler_invoke_hook.hpp" />
     <ClInclude Include="associated_allocator.hpp" />
@@ -130,6 +131,8 @@
     <ClInclude Include="service_registry_helpers.hpp" />
     <ClInclude Include="signal_blocker.hpp" />
     <ClInclude Include="steady_timer.hpp" />
+    <ClInclude Include="strand.hpp" />
+    <ClInclude Include="strand_executor_service.hpp" />
     <ClInclude Include="system_context.hpp" />
     <ClInclude Include="system_executor.hpp" />
     <ClInclude Include="system_timer.hpp" />
@@ -142,6 +145,7 @@
     <ClInclude Include="timer_queue_base.hpp" />
     <ClInclude Include="timer_queue_set.hpp" />
     <ClInclude Include="time_traits.hpp" />
+    <ClInclude Include="uses_executor.hpp" />
     <ClInclude Include="waitable_timer_service.hpp" />
     <ClInclude Include="wait_handler.hpp" />
     <ClInclude Include="wait_op.hpp" />

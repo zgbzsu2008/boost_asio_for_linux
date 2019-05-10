@@ -16,7 +16,7 @@ class executor_op : public Operation
 
   template <typename Function>
   executor_op(Function&& func, const Alloc& a)
-      : Operation(&executor_op::do_complete), handler_(std::forward<Function>(func)), alloc_(a)
+      : Operation(&executor_op::do_complete), handler_(std::forward(func)), alloc_(a)
   {
     static_assert(std::is_convertible<Function&, Handler&>::value);
   }
@@ -26,11 +26,11 @@ class executor_op : public Operation
     executor_op* o(static_cast<executor_op*>(base));
     Alloc a(o->alloc_);
     ptr p = {std::addressof(a), o, o};
-    Handler hander(std::forward<Handler>(o->handler_));
+    Handler hander(std::move(o->handler_));
     p.reset();
     if (owner) {
       detail::fenced_block b(detail::fenced_block::half);
-      std::invoke(hander);
+      boost_asio_handler_invoke_helpers::invoke(handler, handler);
     }
   }
 

@@ -19,6 +19,9 @@
     <Filter Include="test\timer">
       <UniqueIdentifier>{db9ce2e0-3ebf-49d6-ac77-3768bdb31aee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="strand">
+      <UniqueIdentifier>{077e0995-8c41-43df-9007-f7371c54237e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="associated_allocator2.hpp">
@@ -205,6 +208,18 @@
     </ClInclude>
     <ClInclude Include="wait_traits.hpp">
       <Filter>detail</Filter>
+    </ClInclude>
+    <ClInclude Include="strand.hpp">
+      <Filter>strand</Filter>
+    </ClInclude>
+    <ClInclude Include="strand_executor_service.hpp">
+      <Filter>strand</Filter>
+    </ClInclude>
+    <ClInclude Include="bind_executor.hpp">
+      <Filter>strand</Filter>
+    </ClInclude>
+    <ClInclude Include="uses_executor.hpp">
+      <Filter>strand</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
